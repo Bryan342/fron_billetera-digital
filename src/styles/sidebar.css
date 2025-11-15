@@ -1,0 +1,190 @@
+/* ------------------------------------ */
+/* 1. LAYOUT DEL SIDEBAR (Contenedor) */
+/* ------------------------------------ */
+
+.sidebar-container {
+    width: 220px; 
+    min-height: 100vh;
+    padding: 20px 0 0 0;
+    
+    background: linear-gradient(180deg, #064569 0%, #1b93a3 100%); 
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; 
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* ------------------------------------ */
+/* 2. HEADER Y LOGO */
+/* ------------------------------------ */
+
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    padding: 0 20px 30px;
+}
+
+.sidebar-logo-img { /* ⬅️ ESTILO PARA LA IMAGEN DEL LOGO */
+    width: 30px; /* Ajusta este tamaño según sea necesario */
+    height: 30px;
+    margin-right: 10px;
+}
+
+.sidebar-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0;
+}
+
+/* ------------------------------------ */
+/* 3. NAVEGACIÓN PRINCIPAL */
+/* ------------------------------------ */
+
+.sidebar-nav {
+    flex-grow: 1; 
+}
+
+.nav-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.nav-item {
+    margin-bottom: 5px;
+    transition: background-color 0.2s;
+    margin-right: 15px; 
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.nav-link .icon {
+    margin-right: 10px;
+    font-size: 18px;
+}
+
+/* ESTADO ACTIVO (Ítem resaltado) */
+.nav-item.active {
+    background-color: #ffffff;
+    border-radius: 0 8px 8px 0; 
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
+}
+
+.nav-item.active .nav-link {
+    color: #1b6558; 
+    font-weight: 600;
+}
+
+/* ------------------------------------ */
+/* 4. FOOTER Y BOTONES INFERIORES */
+/* ------------------------------------ */
+
+.sidebar-footer {
+    padding: 10px 20px 20px 20px;
+    height: 120px;
+}
+
+.footer-box {
+    background-color: rgba(255, 255, 255, 0.1); 
+    padding: 5px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.btn-options {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    background-color: transparent;
+    color: #ffffff;
+    font-size: 16px;
+    cursor: pointer;
+    opacity: 0.8;
+}
+
+.btn-logout {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    background-color: #047084; 
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-logout:hover {
+    background-color: #296d97;
+}
+
+/* ------------------------------------ */
+/* 5. MEDIA QUERIES (RESPONSIVE) */
+/* ------------------------------------ */
+
+@media (max-width: 768px) {
+  .sidebar-container {
+    width: 64px;
+    padding: 10px 6px;
+    box-shadow: none;
+  }
+
+  .sidebar-header {
+    padding: 8px 6px 14px;
+    justify-content: center;
+  }
+
+  .sidebar-logo-img {
+    width: 36px;
+    height: 36px;
+    margin-right: 0;
+  }
+
+  .sidebar-title { display: none; }
+
+  .nav-list { display: block; }
+
+  .nav-item { margin: 6px 0; margin-right: 0; }
+
+  .nav-link {
+    justify-content: center;
+    padding: 10px;
+    font-size: 0; /* esconde texto visualmente */
+  }
+
+  .nav-link .icon {
+    margin: 0;
+    font-size: 18px;
+    line-height: 1;
+  }
+
+  .sidebar-footer {
+    padding: 8px 6px;
+    height: auto;
+  }
+
+  .btn-options, .btn-logout {
+    padding: 8px;
+    font-size: 0; /* solo se mostrará icono si existe */
+    width: 100%;
+    border-radius: 6px;
+  }
+
+  /* mostrar texto en hover (opcional, si quieres que aparezca label al pasar el mouse) */
+  .sidebar-container:hover { width: 220px; transition: width .18s ease; }
+  .sidebar-container:hover .nav-link { font-size: 15px; }
+  .sidebar-container:hover .sidebar-title { display: block; }
+}

@@ -1,0 +1,176 @@
+/* ------------------------------------ */
+/* 1. LAYOUT PRINCIPAL Y CONTENEDOR */
+/* ------------------------------------ */
+
+/* Estilo de fondo suave (similar al de la imagen) */
+.app-layout {
+    background: linear-gradient(135deg, #e6f7ff 0%, #ffffff 50%, #fff0f5 100%);
+    display: flex;
+    min-height: 100vh;
+    width: 100vw;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Área de contenido principal (derecha del Sidebar) */
+.main-content-area {
+    flex-grow: 1;
+    padding: 30px; 
+    box-sizing: border-box; 
+    overflow-y: auto; 
+}
+
+.enviar-container {
+    width: 100%;
+    max-width: 550px; /* Ancho cómodo para el formulario */
+    margin: 0 auto; /* Centra el formulario en el área de contenido */
+}
+
+/* Título y subtítulo */
+.enviar-container h2 {
+    font-size: 28px;
+    font-weight: 600;
+    color: #333;
+    margin: 0 0 5px 0;
+}
+
+.header-subtitle {
+    font-size: 15px;
+    color: #6c757d;
+    margin: 0 0 20px 0;
+}
+
+
+/* ------------------------------------ */
+/* 2. ESTILO DEL FORMULARIO Y SU TARJETA */
+/* ------------------------------------ */
+
+.enviar-container form {
+    /* La tarjeta blanca principal */
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); 
+    
+    /* Usamos flex para controlar el layout de los botones */
+    display: flex;
+    flex-wrap: wrap; 
+    justify-content: space-between;
+}
+
+/* ------------------------------------ */
+/* 3. BLOQUE DE SALDO INFO (SIMULADO EN CSS) */
+/* ------------------------------------ */
+
+/* Este bloque simula la caja de "Saldo disponible" en la parte superior del formulario */
+.enviar-container form::before {
+    display: block;
+    width: 100%;
+    
+    /* Estilos del bloque */
+    background-color: #f0f7f8; 
+    border: 1px solid #d0e8ef;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    
+    /* Formato de texto del saldo */
+    font-size: 16px;
+    font-weight: 600;
+    color: #3182CE; /* Azul principal */
+}
+
+/* ------------------------------------ */
+/* 4. ESTILOS DE LABELS, INPUTS Y SELECTS */
+/* ------------------------------------ */
+
+.enviar-container label {
+    display: block;
+    font-size: 14px;
+    color: #495057;
+    margin-bottom: 8px;
+    margin-top: 20px; /* Separación vertical */
+    font-weight: 500;
+    flex-basis: 100%; /* Ocupa todo el ancho */
+}
+
+.enviar-container input,
+.enviar-container select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 16px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    background-color: #fcfcfc;
+    color: #333;
+    flex-basis: 100%; /* Ocupa todo el ancho */
+}
+
+.enviar-container input:focus,
+.enviar-container select:focus {
+    border-color: #00897b; 
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 137, 123, 0.1);
+}
+
+/* Nota: Para un diseño fiel, se debe usar la estructura input-with-currency que tu JSX no tiene.
+   Aquí se aplica un estilo genérico. */
+
+
+/* ------------------------------------ */
+/* 5. BOTONES DE ACCIÓN */
+/* ------------------------------------ */
+
+/* Estilo general para todos los botones */
+.enviar-container form button {
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s, box-shadow 0.3s;
+    margin-top: 30px;
+    
+    /* Los botones deben estar alineados al final */
+    order: 100; /* Asegura que se vayan al final */
+}
+
+/* Botón de Submit (Confirmar Envío / Continuar) */
+.enviar-container form button:nth-child(1) { 
+    /* El 1er botón con order:100 será el principal */
+    background-color: #004d40; 
+    color: #ffffff;
+    flex-basis: calc(50% - 7.5px); /* Ocupa la mitad del ancho */
+    margin-right: 15px; 
+}
+.enviar-container form button:nth-child(1):hover {
+    background-color: #00332c;
+}
+
+/* Simulación de Botón Limpiar (el segundo botón que no existe en tu JSX original) */
+/* Si tu JSX fuera: <button type="submit">Continuar</button><button type="button">Limpiar</button> */
+/* Si solo tienes un botón, este estilo no se aplica. */
+
+/* ------------------------------------ */
+/* 6. RESPONSIVIDAD */
+/* ------------------------------------ */
+
+@media (max-width: 768px) {
+    .main-content-area {
+        padding: 20px 15px; 
+    }
+    
+    .enviar-container form {
+        padding: 20px;
+        gap: 0;
+    }
+    
+    /* Apilar botones en móvil */
+    .enviar-container form button:nth-child(1) {
+        flex-basis: 100%; 
+        margin-right: 0;
+        margin-bottom: 10px; 
+    }
+}

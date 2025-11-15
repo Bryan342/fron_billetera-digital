@@ -1,0 +1,175 @@
+/* ------------------------------------ */
+/* 1. LAYOUT PRINCIPAL Y CONTENEDOR */
+/* ------------------------------------ */
+
+/* Estilo para el contenedor flex externo (sustituye al style={{ display: 'flex' }}) */
+.app-layout {
+    display: flex;
+    min-height: 100vh;
+    width: 100vw; 
+    background-color: #f7f9fc; /* Fondo claro del dashboard */
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Área de contenido principal (a la derecha del Sidebar) */
+.home-container {
+    flex-grow: 1;
+    padding: 30px; 
+    box-sizing: border-box; 
+    overflow-y: auto; 
+    width: 100%;
+    max-width: 1200px; 
+    margin: 0 auto;
+}
+
+/* ------------------------------------ */
+/* 2. SALUDO (Para darle un look limpio si se decide mantener) */
+/* ------------------------------------ */
+
+.bienvenida {
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+    margin-top: 0;
+    margin-bottom: 5px;
+}
+
+.subtext {
+    font-size: 15px;
+    color: #6c757d;
+    margin-bottom: 25px;
+}
+
+/* ------------------------------------ */
+/* 3. BLOQUE: SALDO TOTAL (TARJETA OSCURA) */
+/* ------------------------------------ */
+
+.saldo-box { /* Clase principal para el bloque de saldo */
+    /* Fondo con gradiente oscuro, similar al de la imagen */
+    background: linear-gradient(180deg, #064569 0%, #1b93a3 100%);
+    color: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15); 
+    margin-bottom: 30px;
+}
+
+.saldo-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline; /* Alinea 'Saldo Total' y 'Billetera Principal Luca' */
+}
+
+.saldo-box h3 { /* Saldo Total */
+    font-size: 16px;
+    opacity: 0.8;
+    margin-top: 0;
+    margin-bottom: 5px;
+    font-weight: 400;
+}
+
+.wallet-label { /* Billetera Principal Luca */
+    display: none; /* Ocultamos el wallet-label aquí ya que en la imagen está debajo del monto */
+}
+
+.saldo-monto {
+    font-size: 44px; 
+    font-weight: 700;
+    margin: 0 0 10px 0;
+}
+
+/* Estilo para el label que va debajo del monto */
+.saldo-box .saldo-label {
+    font-size: 14px;
+    font-weight: 300;
+    opacity: 0.9;
+    margin-bottom: 25px;
+    display: block; /* Asegura que ocupe su propia línea */
+}
+
+/* 4. ESTILOS DE BOTONES DE ACCIÓN */
+
+.acciones { /* Cambiada a 'acciones' según tu JSX */
+    display: flex;
+    gap: 15px; 
+}
+
+.acciones button {
+    padding: 10px 20px;
+    border: none; 
+    border-radius: 6px;
+    background-color: rgba(255, 255, 255, 0.2); /* Fondo semi-transparente */
+    color: #ffffff;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    flex-grow: 1; /* Permite que los botones crezcan */
+}
+
+.acciones button:hover {
+    background-color: rgba(255, 255, 255, 0.35);
+}
+
+/* Ajuste para el botón de "Más opciones" si se quiere como ícono */
+.acciones button:nth-child(3) {
+    max-width: 50px; 
+    min-width: 50px;
+    padding: 10px 0;
+    text-indent: -9999px; /* Oculta el texto */
+    position: relative;
+    flex-grow: 0; 
+}
+
+.acciones button:nth-child(3)::after {
+    content: '...';
+    text-indent: 0;
+    position: absolute;
+    color: #ffffff;
+    font-size: 20px;
+    line-height: 1;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+
+/* ------------------------------------ */
+/* 5. MEDIA QUERIES (RESPONSIVIDAD) */
+/* ------------------------------------ */
+
+@media (max-width: 768px) {
+    .home-container {
+        padding: 20px 15px; 
+    }
+
+    .saldo-monto {
+        font-size: 36px; 
+    }
+
+    .acciones {
+        flex-wrap: wrap; 
+        gap: 10px;
+    }
+    
+    .acciones button {
+        /* Los dos primeros botones ocupan la mitad del ancho */
+        flex-basis: calc(50% - 5px); 
+        margin-bottom: 0;
+    }
+
+    /* El botón de más opciones ocupa todo el ancho abajo */
+    .acciones button:nth-child(3) {
+        flex-basis: 100%; 
+        max-width: none;
+        min-width: 100%;
+        margin-top: 10px;
+        text-indent: 0;
+        /* Estilo simple para que se lea 'Más opciones' en móvil */
+        text-align: center;
+        padding: 10px;
+    }
+
+    .acciones button:nth-child(3)::after {
+        content: none;
+    }
+}
