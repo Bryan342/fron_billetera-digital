@@ -23,12 +23,6 @@
     margin: 0 auto;
 }
 
-/* Ocultamos el título general que no aparece en el mockup */
-.billetera-container h2,
-.billetera-container .subtext {
-    display: none;
-}
-
 /* ------------------------------------ */
 /* 2. BLOQUE: TARJETAS DE RESUMEN (GRID) */
 /* ------------------------------------ */
