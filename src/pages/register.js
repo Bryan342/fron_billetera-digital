@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { registrarUsuario } from '../services/api';
 import '../styles/register.css';
 import logo from '../assets/logo.png';
 
 function Register() {
-  const [nombre, setNombre] = useState('');
   const [email, setEmail] = useState('');
   const [telefono, setTelefono] = useState('');
   const [dni, setDni] = useState('');
@@ -16,51 +14,78 @@ function Register() {
 
   const handleRegister = async (e) => {
     e.preventDefault();
+    setError('');
 
-    if (!nombre || !email || !telefono || !dni || password.length < 8 || password !== confirmar) {
+    // Validaciones básicas
+    if (!email || !telefono || !dni || password.length < 8 || password !== confirmar) {
       setError('Verifica los campos y que las contraseñas coincidan');
       return;
     }
 
-    const nuevoUsuario = {
-      nombre,
-      email,
-      telefono,
-      dni,
-      password,
-    };
+    try {
+      const authResponse = await fetch("http://localhost:8080/api/auth/register", { //CAMBIAR RUTA
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          dni,
+          password,
+        }),
+      });
 
-    const res = await registrarUsuario(nuevoUsuario);
-    if (res.success) {
-      alert('Cuenta creada (simulada)');
-      navigate('/');
-    } else {
-      setError('Error al registrar (simulado)');
+      const authResult = await authResponse.json();
+
+      if (!authResponse.ok) {
+        setError(authResult.message || "Error al registrar usuario");
+        return;
+      }
+
+      const token = authResult.data?.token;
+      if (!token) {
+        setError("El servidor no devolvió un token");
+        return;
+      }
+
+      localStorage.setItem("token", token);
+
+    
+      const userResponse = await fetch("http://localhost:3001/users", { //CAMBIAR RUTA
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          dni,
+          email,
+          phone: telefono,
+        }),
+      });
+
+      if (!userResponse.ok) {
+        setError("No se pudo crear el usuario en Users Service");
+        return;
+      }
+
+      alert("Cuenta creada correctamente");
+      navigate("/");
+
+    } catch (err) {
+      console.error(err);
+      setError("Error en el servidor");
     }
   };
 
   return (
-    <div className="register-wrapper"> {/* Contenedor Principal */}
-      <div className="register-box"> {/* Contenedor de la Tarjeta */}
-        
-        {/* LOGO Y TEXTOS */}
+    <div className="register-wrapper">
+      <div className="register-box">
+
         <img src={logo} alt="Logo Luca" className="logo-luca" />
         <h2>Crear Cuenta</h2>
         <p className="subtext">Únete a Luca hoy</p>
 
-        {/* FORMULARIO */}
         <form onSubmit={handleRegister}>
-          
-          {/* Nombre Completo */}
-          <div className="form-group-register">
-            <label>Nombre Completo</label>
-            <input 
-              type="text" 
-              placeholder="Juan Pérez" 
-              value={nombre} 
-              onChange={(e) => setNombre(e.target.value)} 
-            />
-          </div>
 
           {/* Correo Electrónico */}
           <div className="form-group-register">
@@ -68,8 +93,8 @@ function Register() {
             <input 
               type="email" 
               placeholder="tu@email.com" 
-              value={email} 
-              onChange={(e) => setEmail(e.target.value)} 
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
 
@@ -78,9 +103,9 @@ function Register() {
             <label>Teléfono</label>
             <input 
               type="text" 
-              placeholder="3001234567" 
-              value={telefono} 
-              onChange={(e) => setTelefono(e.target.value)} 
+              placeholder="987654321"
+              value={telefono}
+              onChange={(e) => setTelefono(e.target.value)}
             />
           </div>
 
@@ -89,9 +114,9 @@ function Register() {
             <label>DNI</label>
             <input 
               type="text" 
-              placeholder="12345678" 
-              value={dni} 
-              onChange={(e) => setDni(e.target.value)} 
+              placeholder="12345678"
+              value={dni}
+              onChange={(e) => setDni(e.target.value)}
             />
           </div>
 
@@ -100,45 +125,42 @@ function Register() {
             <label>Contraseña</label>
             <input 
               type="password" 
-              placeholder="********" 
-              value={password} 
-              onChange={(e) => setPassword(e.target.value)} 
+              placeholder="********"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
-            {/* Nota de contraseña */}
-            <p className="password-note">Mínimo 8 caracteres</p> 
+            <p className="password-note">Mínimo 8 caracteres</p>
           </div>
 
-          {/* Confirmar Contraseña */}
+          {/* Confirmar */}
           <div className="form-group-register">
             <label>Confirmar Contraseña</label>
             <input 
               type="password" 
-              placeholder="********" 
-              value={confirmar} 
-              onChange={(e) => setConfirmar(e.target.value)} 
+              placeholder="********"
+              value={confirmar}
+              onChange={(e) => setConfirmar(e.target.value)}
             />
           </div>
 
-          {/* Botón Primario */}
           <button type="submit" className="btn-register-primary">
             Crear Cuenta
           </button>
         </form>
 
-        {/* MENSAJES Y ENLACE DE LOGIN */}
         {error && <p className="error">{error}</p>}
-        
+
         <div className="login-prompt">
           <p>¿Ya tienes cuenta?</p>
-          {/* Usamos un botón para el estilo, aunque es un enlace de navegación */}
-          <button 
-            type="button" 
-            onClick={() => navigate('/')} 
+          <button
+            type="button"
+            onClick={() => navigate('/')}
             className="btn-register-secondary"
           >
             Iniciar Sesión
           </button>
         </div>
+
       </div>
     </div>
   );

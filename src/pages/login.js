@@ -1,23 +1,70 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import usuarioData from '../data/usuario.json';
-import '../styles/login.css';
-import logo from '../assets/logo.png';
-
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import "../styles/login.css";
+import logo from "../assets/logo.png";
 
 function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [dni, setDni] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    const usuario = usuarioData.usuario;
-    if (email === usuario.email && password === usuario.password) {
-      navigate('/home');
-    } else {
-      setError('Credenciales inválidas');
+    setError("");
+
+    try {
+      const response = await fetch("http://localhost:8080/api/auth/login", {  //CAMBIAR RUTA
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          dni,
+          password,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        setError(result.message || "Credenciales inválidas");
+        return;
+      }
+
+      const token = result.data?.token;
+      if (!token) {
+        setError("Error: el servidor no devolvió un token");
+        return;
+      }
+
+      localStorage.setItem("token", token);
+
+      const userResponse = await fetch(
+        `http://localhost:3001/users/dni/${dni}`,  //CAMBIAR RUTA
+        {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const userData = await userResponse.json();
+
+      if (!userResponse.ok) {
+        setError("No se pudieron obtener los datos del usuario");
+        return;
+      }
+
+      localStorage.setItem("userData", JSON.stringify(userData));
+
+      navigate("/home");
+
+    } catch (err) {
+      console.error(err);
+      setError("Error en el servidor");
     }
   };
 
@@ -29,12 +76,12 @@ function Login() {
         <p className="subtext">Acceso seguro a tu billetera Luca</p>
 
         <form onSubmit={handleLogin}>
-          <label>Correo Electrónico</label>
+          <label>DNI</label>
           <input
-            type="email"
-            placeholder="tu@email.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            type="text"
+            placeholder="87654321"
+            value={dni}
+            onChange={(e) => setDni(e.target.value)}
           />
 
           <label>Contraseña</label>
