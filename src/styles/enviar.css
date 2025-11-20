@@ -1,176 +1,306 @@
-/* ------------------------------------ */
-/* 1. LAYOUT PRINCIPAL Y CONTENEDOR */
-/* ------------------------------------ */
-
-/* Estilo de fondo suave (similar al de la imagen) */
-.app-layout {
-    background: linear-gradient(135deg, #e6f7ff 0%, #ffffff 50%, #fff0f5 100%);
-    display: flex;
-    min-height: 100vh;
-    width: 100vw;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+/* Layout Base */
+.layout-container {
+  display: flex;
+  height: 100vh;
+  background-color: #f0f2f5;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-/* Área de contenido principal (derecha del Sidebar) */
-.main-content-area {
-    flex-grow: 1;
-    padding: 30px; 
-    box-sizing: border-box; 
-    overflow-y: auto; 
+.content-area {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.enviar-container {
-    width: 100%;
-    max-width: 550px; /* Ancho cómodo para el formulario */
-    margin: 0 auto; /* Centra el formulario en el área de contenido */
+/* Card Principal */
+.card-transferencia {
+  background: #ffffff;
+  width: 100%;
+  max-width: 420px;
+  padding: 2.5rem;
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+  animation: slideUp 0.4s ease-out;
 }
 
-/* Título y subtítulo */
-.enviar-container h2 {
-    font-size: 28px;
-    font-weight: 600;
-    color: #333;
-    margin: 0 0 5px 0;
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-.header-subtitle {
-    font-size: 15px;
-    color: #6c757d;
-    margin: 0 0 20px 0;
+.card-header h2 {
+  font-size: 1.6rem;
+  color: #111;
+  margin-bottom: 0.5rem;
 }
 
-
-/* ------------------------------------ */
-/* 2. ESTILO DEL FORMULARIO Y SU TARJETA */
-/* ------------------------------------ */
-
-.enviar-container form {
-    /* La tarjeta blanca principal */
-    background-color: #ffffff;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); 
-    
-    /* Usamos flex para controlar el layout de los botones */
-    display: flex;
-    flex-wrap: wrap; 
-    justify-content: space-between;
+.card-header p {
+  color: #666;
+  font-size: 0.95rem;
+  margin-bottom: 2rem;
 }
 
-/* ------------------------------------ */
-/* 3. BLOQUE DE SALDO INFO (SIMULADO EN CSS) */
-/* ------------------------------------ */
-
-/* Este bloque simula la caja de "Saldo disponible" en la parte superior del formulario */
-.enviar-container form::before {
-    display: block;
-    width: 100%;
-    
-    /* Estilos del bloque */
-    background-color: #f0f7f8; 
-    border: 1px solid #d0e8ef;
-    padding: 15px;
-    border-radius: 8px;
-    margin-bottom: 25px;
-    
-    /* Formato de texto del saldo */
-    font-size: 16px;
-    font-weight: 600;
-    color: #3182CE; /* Azul principal */
+/* Formulario */
+.form-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
-/* ------------------------------------ */
-/* 4. ESTILOS DE LABELS, INPUTS Y SELECTS */
-/* ------------------------------------ */
-
-.enviar-container label {
-    display: block;
-    font-size: 14px;
-    color: #495057;
-    margin-bottom: 8px;
-    margin-top: 20px; /* Separación vertical */
-    font-weight: 500;
-    flex-basis: 100%; /* Ocupa todo el ancho */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
-.enviar-container input,
-.enviar-container select {
-    width: 100%;
-    padding: 12px 15px;
-    border: 1px solid #ced4da;
-    border-radius: 8px;
-    box-sizing: border-box;
-    font-size: 16px;
-    transition: border-color 0.3s, box-shadow 0.3s;
-    background-color: #fcfcfc;
-    color: #333;
-    flex-basis: 100%; /* Ocupa todo el ancho */
+.form-group label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #34495e;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-.enviar-container input:focus,
-.enviar-container select:focus {
-    border-color: #00897b; 
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(0, 137, 123, 0.1);
+/* Inputs Modernos */
+input {
+  width: 100%;
+  padding: 1rem;
+  border: 2px solid #eef0f3;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  transition: all 0.2s;
+  background: #f9f9f9;
+  box-sizing: border-box; /* Importante */
 }
 
-/* Nota: Para un diseño fiel, se debe usar la estructura input-with-currency que tu JSX no tiene.
-   Aquí se aplica un estilo genérico. */
-
-
-/* ------------------------------------ */
-/* 5. BOTONES DE ACCIÓN */
-/* ------------------------------------ */
-
-/* Estilo general para todos los botones */
-.enviar-container form button {
-    padding: 12px;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.3s, box-shadow 0.3s;
-    margin-top: 30px;
-    
-    /* Los botones deben estar alineados al final */
-    order: 100; /* Asegura que se vayan al final */
+input:focus {
+  outline: none;
+  border-color: #009688;
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(0, 150, 136, 0.1);
 }
 
-/* Botón de Submit (Confirmar Envío / Continuar) */
-.enviar-container form button:nth-child(1) { 
-    /* El 1er botón con order:100 será el principal */
-    background-color: #004d40; 
-    color: #ffffff;
-    flex-basis: calc(50% - 7.5px); /* Ocupa la mitad del ancho */
-    margin-right: 15px; 
-}
-.enviar-container form button:nth-child(1):hover {
-    background-color: #00332c;
+input:disabled {
+  background-color: #eee;
+  color: #999;
+  cursor: not-allowed;
 }
 
-/* Simulación de Botón Limpiar (el segundo botón que no existe en tu JSX original) */
-/* Si tu JSX fuera: <button type="submit">Continuar</button><button type="button">Limpiar</button> */
-/* Si solo tienes un botón, este estilo no se aplica. */
+/* Input de Moneda */
+.input-wrapper {
+  position: relative;
+}
+.currency-symbol {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-weight: bold;
+  color: #009688;
+  font-size: 1.1rem;
+}
+.currency-input input {
+  padding-left: 45px;
+  font-weight: bold;
+  color: #009688;
+}
 
-/* ------------------------------------ */
-/* 6. RESPONSIVIDAD */
-/* ------------------------------------ */
+/* Lógica visual del input de teléfono (Loader / Check) */
+.input-with-status {
+  position: relative;
+}
 
-@media (max-width: 768px) {
-    .main-content-area {
-        padding: 20px 15px; 
-    }
-    
-    .enviar-container form {
-        padding: 20px;
-        gap: 0;
-    }
-    
-    /* Apilar botones en móvil */
-    .enviar-container form button:nth-child(1) {
-        flex-basis: 100%; 
-        margin-right: 0;
-        margin-bottom: 10px; 
-    }
+.status-icon {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.check-icon {
+  color: #009688;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.spinner-small {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #009688;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Badge de Usuario Encontrado */
+.receiver-badge {
+  background-color: #e0f2f1;
+  color: #00695c;
+  padding: 0.8rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  border: 1px solid #b2dfdb;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.error-text {
+  color: #d32f2f;
+  font-size: 0.85rem;
+  margin-top: 4px;
+}
+
+.input-error {
+  border-color: #d32f2f !important;
+  background-color: #ffebee !important;
+}
+
+/* Botones */
+.btn-primary {
+  background-color: #009688; /* Color similar al de tu imagen */
+  color: white;
+  padding: 1rem;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: background 0.2s;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: #00796b;
+  transform: translateY(-1px);
+}
+
+.btn-primary:disabled {
+  background-color: #bdc3c7;
+  cursor: not-allowed;
+}
+
+/* Vista de Éxito */
+.success-view {
+  text-align: center;
+}
+
+.success-icon-large {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.receipt {
+  background: #f8f9fa;
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin: 1.5rem 0;
+  text-align: left;
+}
+
+.receipt-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.8rem;
+  font-size: 0.95rem;
+  color: #555;
+}
+
+.receipt-row strong {
+  color: #111;
+}
+
+.btn-secondary {
+  background: transparent;
+  border: 2px solid #e0e0e0;
+  color: #555;
+  padding: 0.8rem 1.5rem;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+  border-color: #333;
+  color: #333;
+}
+
+/* Contenedor del Toggle */
+.toggle-container {
+  margin-bottom: 1.5rem;
+}
+
+.toggle-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+/* Grupo de Botones (Pill shape) */
+.toggle-group {
+  display: flex;
+  background-color: #f3f4f6;
+  padding: 4px;
+  border-radius: 12px;
+  gap: 5px;
+}
+
+.toggle-btn {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+/* Estado Activo del Botón */
+.toggle-btn.active {
+  background-color: #ffffff;
+  color: #009688; /* El color verde de tu marca */
+  font-weight: 700;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.toggle-btn:hover:not(.active) {
+  color: #333;
+  background-color: rgba(0,0,0,0.03);
+}
+
+/* Animación suave para input condicional */
+.slide-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Select Styling */
+select {
+  width: 100%;
+  padding: 1rem;
+  border: 2px solid #eef0f3;
+  border-radius: 12px;
+  font-size: 1rem;
+  background-color: #f9f9f9;
+  outline: none;
+}
+select:focus {
+  border-color: #009688;
 }
