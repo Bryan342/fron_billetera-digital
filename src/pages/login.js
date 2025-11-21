@@ -14,7 +14,7 @@ function Login() {
     setError("");
 
     try {
-      const response = await fetch("http://localhost:8080/api/auth/login", {  //CAMBIAR RUTA
+      const response = await fetch("http://localhost:8080/api/v1/auth/login", {  //CAMBIAR RUTA
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -26,13 +26,15 @@ function Login() {
       });
 
       const result = await response.json();
+      console.log(result)
 
       if (!response.ok) {
         setError(result.message || "Credenciales inválidas");
         return;
       }
 
-      const token = result.data?.token;
+      const token = result.data?.access_token;
+      console.log(token)
       if (!token) {
         setError("Error: el servidor no devolvió un token");
         return;
@@ -41,7 +43,7 @@ function Login() {
       localStorage.setItem("token", token);
 
       const userResponse = await fetch(
-        `http://localhost:3001/users/dni/${dni}`,  //CAMBIAR RUTA
+        `http://localhost:3005/users/dni/${dni}`,  //CAMBIAR RUTA
         {
           method: "GET",
           headers: {

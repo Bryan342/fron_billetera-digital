@@ -23,7 +23,7 @@ function Register() {
     }
 
     try {
-      const authResponse = await fetch("http://localhost:8080/api/auth/register", { //CAMBIAR RUTA
+      const authResponse = await fetch("http://localhost:8080/api/v1/auth/register", { //CAMBIAR RUTA
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -41,7 +41,7 @@ function Register() {
         return;
       }
 
-      const token = authResult.data?.token;
+      const token = authResult.data?.access_token;
       if (!token) {
         setError("El servidor no devolvió un token");
         return;
@@ -49,8 +49,8 @@ function Register() {
 
       localStorage.setItem("token", token);
 
-    
-      const userResponse = await fetch("http://localhost:3001/users", { //CAMBIAR RUTA
+
+      await fetch("http://localhost:3005/users", { //CAMBIAR RUTA
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -62,11 +62,6 @@ function Register() {
           phone: telefono,
         }),
       });
-
-      if (!userResponse.ok) {
-        setError("No se pudo crear el usuario en Users Service");
-        return;
-      }
 
       alert("Cuenta creada correctamente");
       navigate("/");
@@ -90,9 +85,9 @@ function Register() {
           {/* Correo Electrónico */}
           <div className="form-group-register">
             <label>Correo Electrónico</label>
-            <input 
-              type="email" 
-              placeholder="tu@email.com" 
+            <input
+              type="email"
+              placeholder="tu@email.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
@@ -101,8 +96,8 @@ function Register() {
           {/* Teléfono */}
           <div className="form-group-register">
             <label>Teléfono</label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               placeholder="987654321"
               value={telefono}
               onChange={(e) => setTelefono(e.target.value)}
@@ -112,8 +107,8 @@ function Register() {
           {/* DNI */}
           <div className="form-group-register">
             <label>DNI</label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               placeholder="12345678"
               value={dni}
               onChange={(e) => setDni(e.target.value)}
@@ -123,8 +118,8 @@ function Register() {
           {/* Contraseña */}
           <div className="form-group-register">
             <label>Contraseña</label>
-            <input 
-              type="password" 
+            <input
+              type="password"
               placeholder="********"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -135,8 +130,8 @@ function Register() {
           {/* Confirmar */}
           <div className="form-group-register">
             <label>Confirmar Contraseña</label>
-            <input 
-              type="password" 
+            <input
+              type="password"
               placeholder="********"
               value={confirmar}
               onChange={(e) => setConfirmar(e.target.value)}
