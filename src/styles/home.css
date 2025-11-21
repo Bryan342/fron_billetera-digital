@@ -1,175 +1,193 @@
-/* ------------------------------------ */
-/* 1. LAYOUT PRINCIPAL Y CONTENEDOR */
-/* ------------------------------------ */
+:root {
+  --bg-body: #f1f5f9;
+  --card-bg: #ffffff;
+  --primary-blue: #2563eb;
+  --text-main: #1e293b;
+  --text-muted: #64748b;
+  --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  --sidebar-width: 250px;
+}
 
-/* Estilo para el contenedor flex externo (sustituye al style={{ display: 'flex' }}) */
+/* 1. LAYOUT GENERAL */
 .app-layout {
-    display: flex;
-    min-height: 100vh;
-    width: 100vw; 
-    background-color: #f7f9fc; /* Fondo claro del dashboard */
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  min-height: 100vh;
+  background-color: var(--bg-body);
+  font-family: 'Segoe UI', Roboto, sans-serif;
+  display: block;
 }
 
-/* Área de contenido principal (a la derecha del Sidebar) */
-.home-container {
-    flex-grow: 1;
-    padding: 30px; 
-    box-sizing: border-box; 
-    overflow-y: auto; 
-    width: 100%;
-    max-width: 1200px; 
-    margin: 0 auto;
+/* 2. ÁREA DE CONTENIDO */
+.content-area {
+  margin-left: var(--sidebar-width);
+  width: calc(100% - var(--sidebar-width));
+  
+  /* CAMBIO: Aumenté de 4rem a 6rem para escritorio */
+  padding-top: 6rem; 
+  padding-left: 2rem;
+  padding-right: 2rem;
+  padding-bottom: 2rem;
+  
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-/* ------------------------------------ */
-/* 2. SALUDO (Para darle un look limpio si se decide mantener) */
-/* ------------------------------------ */
-
-.bienvenida {
-    font-size: 24px;
-    font-weight: 600;
-    color: #333;
-    margin-top: 0;
-    margin-bottom: 5px;
+/* Contenedor del Feed */
+.feed-container {
+  width: 100%;
+  max-width: 800px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding-bottom: 1rem;
 }
 
-.subtext {
-    font-size: 15px;
-    color: #6c757d;
-    margin-bottom: 25px;
+/* Header */
+.dashboard-header {
+  width: 100%;
+  margin-bottom: 1.5rem;
 }
 
-/* ------------------------------------ */
-/* 3. BLOQUE: SALDO TOTAL (TARJETA OSCURA) */
-/* ------------------------------------ */
-
-.saldo-box { /* Clase principal para el bloque de saldo */
-    /* Fondo con gradiente oscuro, similar al de la imagen */
-    background: linear-gradient(180deg, #064569 0%, #1b93a3 100%);
-    color: #ffffff;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15); 
-    margin-bottom: 30px;
+.dashboard-header h2 {
+  color: var(--text-main);
+  font-size: 1.8rem;
+  margin: 0;
+  font-weight: 700;
 }
 
-.saldo-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline; /* Alinea 'Saldo Total' y 'Billetera Principal Luca' */
+.dashboard-header p {
+  color: var(--text-muted);
+  margin-top: 0.25rem;
 }
 
-.saldo-box h3 { /* Saldo Total */
-    font-size: 16px;
-    opacity: 0.8;
-    margin-top: 0;
-    margin-bottom: 5px;
-    font-weight: 400;
+/* TARJETAS */
+.pro-card {
+  background-color: var(--card-bg);
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow-card);
+  border: 1px solid #e2e8f0;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-.wallet-label { /* Billetera Principal Luca */
-    display: none; /* Ocultamos el wallet-label aquí ya que en la imagen está debajo del monto */
+.card-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
 }
 
-.saldo-monto {
-    font-size: 44px; 
-    font-weight: 700;
-    margin: 0 0 10px 0;
+.card-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-main);
 }
 
-/* Estilo para el label que va debajo del monto */
-.saldo-box .saldo-label {
-    font-size: 14px;
-    font-weight: 300;
-    opacity: 0.9;
-    margin-bottom: 25px;
-    display: block; /* Asegura que ocupe su propia línea */
+/* PROMO BEMBOS */
+.promo-banner {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
 }
 
-/* 4. ESTILOS DE BOTONES DE ACCIÓN */
-
-.acciones { /* Cambiada a 'acciones' según tu JSX */
-    display: flex;
-    gap: 15px; 
+.promo-img {
+  width: 120px;
+  height: 120px;
+  border-radius: 12px;
+  object-fit: cover;
+  flex-shrink: 0;
 }
 
-.acciones button {
-    padding: 10px 20px;
-    border: none; 
-    border-radius: 6px;
-    background-color: rgba(255, 255, 255, 0.2); /* Fondo semi-transparente */
-    color: #ffffff;
-    font-size: 15px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-    flex-grow: 1; /* Permite que los botones crezcan */
+.promo-content h3 {
+  margin: 0 0 0.5rem 0;
+  color: #b91c1c;
+  font-size: 1.4rem;
 }
 
-.acciones button:hover {
-    background-color: rgba(255, 255, 255, 0.35);
+.promo-badge {
+  background-color: #fee2e2;
+  color: #b91c1c;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+  display: inline-block;
 }
 
-/* Ajuste para el botón de "Más opciones" si se quiere como ícono */
-.acciones button:nth-child(3) {
-    max-width: 50px; 
-    min-width: 50px;
-    padding: 10px 0;
-    text-indent: -9999px; /* Oculta el texto */
-    position: relative;
-    flex-grow: 0; 
+.btn-promo {
+  margin-top: 1rem;
+  background-color: #b91c1c;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
 }
 
-.acciones button:nth-child(3)::after {
-    content: '...';
-    text-indent: 0;
-    position: absolute;
-    color: #ffffff;
-    font-size: 20px;
-    line-height: 1;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+/* SEGURIDAD */
+.security-tip {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
 }
 
+.icon-box {
+  background-color: #eff6ff;
+  color: var(--primary-blue);
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
 
-/* ------------------------------------ */
-/* 5. MEDIA QUERIES (RESPONSIVIDAD) */
-/* ------------------------------------ */
+/* LISTA DE NOVEDADES */
+.update-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid #f1f5f9;
+}
 
+.update-row:last-child {
+  border-bottom: none;
+}
+
+.date-badge {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* --- MÓVIL --- */
 @media (max-width: 768px) {
-    .home-container {
-        padding: 20px 15px; 
-    }
-
-    .saldo-monto {
-        font-size: 36px; 
-    }
-
-    .acciones {
-        flex-wrap: wrap; 
-        gap: 10px;
-    }
+  .content-area {
+    margin-left: 0;
+    width: 100%;
     
-    .acciones button {
-        /* Los dos primeros botones ocupan la mitad del ancho */
-        flex-basis: calc(50% - 5px); 
-        margin-bottom: 0;
-    }
+    /* CAMBIO CRÍTICO: Antes tenías 1rem, ahora 5rem */
+    /* Esto asegura que el texto no choque con el borde superior en móvil */
+    padding-top: 5rem; 
+    
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-bottom: 100px;
+  }
 
-    /* El botón de más opciones ocupa todo el ancho abajo */
-    .acciones button:nth-child(3) {
-        flex-basis: 100%; 
-        max-width: none;
-        min-width: 100%;
-        margin-top: 10px;
-        text-indent: 0;
-        /* Estilo simple para que se lea 'Más opciones' en móvil */
-        text-align: center;
-        padding: 10px;
-    }
-
-    .acciones button:nth-child(3)::after {
-        content: none;
-    }
+  .promo-banner {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .promo-img {
+    margin-bottom: 1rem;
+  }
 }

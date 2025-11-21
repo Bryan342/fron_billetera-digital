@@ -1,17 +1,21 @@
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import '../styles/sidebar.css';
-import logo from '../assets/logo.png';
+
+const logo = "https://cdn-icons-png.flaticon.com/512/2534/2534183.png"; 
 
 function Sidebar() {
   const location = useLocation();
   const navigate = useNavigate();
+  
   const isHomeActive = location.pathname === '/home' || location.pathname === '/'; 
 
   const handleLogout = () => {
-    localStorage.clear();
-
-    navigate("/"); 
+    // Opcional: Preguntar antes de salir
+    if (window.confirm("¿Cerrar sesión en Luca?")) {
+      localStorage.clear();
+      navigate("/"); 
+    }
   };
 
   return (
@@ -25,39 +29,43 @@ function Sidebar() {
       <nav className="sidebar-nav">
         <ul className="nav-list">
 
+          {/* ITEMS NORMALES */}
           <li className={`nav-item ${isHomeActive ? 'active' : ''}`}>
             <Link to="/home" className="nav-link">
               <span className="icon">🏠</span> 
-              Inicio
+              <span>Inicio</span>
             </Link>
           </li>
 
           <li className={`nav-item ${location.pathname === '/billetera' ? 'active' : ''}`}>
             <Link to="/billetera" className="nav-link">
               <span className="icon">💳</span> 
-              Billetera
+              <span>Billetera</span>
             </Link>
           </li>
 
           <li className={`nav-item ${location.pathname === '/enviar' ? 'active' : ''}`}>
             <Link to="/enviar" className="nav-link">
               <span className="icon">✉️</span> 
-              Enviar
+              <span>Enviar</span>
             </Link>
+          </li>
+
+          {/* 🔴 NUEVO: BOTÓN SALIR (SOLO VISIBLE EN MÓVIL) */}
+          <li className="nav-item mobile-only" onClick={handleLogout}>
+            <div className="nav-link" style={{ cursor: 'pointer' }}>
+              <span className="icon">🚪</span> 
+              <span>Salir</span>
+            </div>
           </li>
 
         </ul>
       </nav>
 
+      {/* FOOTER (SOLO VISIBLE EN PC) */}
       <div className="sidebar-footer">
-        <div className="footer-box">
-          <button className="btn-options">
-            <span className="icon">⚙️</span>
-          </button>
-        </div>
-
         <button className="btn-logout" onClick={handleLogout}>
-          Salir
+          <span className="icon">🚪</span> Cerrar Sesión
         </button>
       </div>
     </div>

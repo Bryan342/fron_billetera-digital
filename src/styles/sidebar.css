@@ -1,190 +1,213 @@
-/* ------------------------------------ */
-/* 1. LAYOUT DEL SIDEBAR (Contenedor) */
-/* ------------------------------------ */
+/* sidebar.css */
+:root {
+  --sidebar-width: 250px;
+  --bg-color: #ffffff;
+  --border-color: #e2e8f0;
+  --primary-color: #4f46e5;
+}
 
+/* =========================================================
+   🖥️ ESCRITORIO: SIDEBAR FIJO A LA IZQUIERDA
+   ========================================================= */
 .sidebar-container {
-    width: 220px; 
-    min-height: 100vh;
-    padding: 20px 0 0 0;
-    
-    background: linear-gradient(180deg, #064569 0%, #1b93a3 100%); 
-    color: #ffffff;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between; 
-    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  /* CLAVE: position fixed asegura que siempre se vea en la ventana */
+  position: fixed; 
+  top: 0;
+  left: 0;
+  bottom: 0; /* Se ancla arriba y abajo */
+  
+  width: var(--sidebar-width);
+  background-color: var(--bg-color);
+  border-right: 1px solid var(--border-color);
+  
+  /* Flexbox vertical para distribuir espacio */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Empuja el footer al fondo */
+  
+  padding: 1.5rem;
+  box-sizing: border-box; /* Evita que el padding rompa el tamaño */
+  z-index: 1000;
 }
 
-/* ------------------------------------ */
-/* 2. HEADER Y LOGO */
-/* ------------------------------------ */
-
+/* --- HEADER (Logo) --- */
 .sidebar-header {
-    display: flex;
-    align-items: center;
-    padding: 0 20px 30px;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  /* Reduje un poco el margen para pantallas pequeñas */
+  margin-bottom: 2rem; 
+  flex-shrink: 0; /* Evita que el logo se aplaste */
 }
 
-.sidebar-logo-img { /* ⬅️ ESTILO PARA LA IMAGEN DEL LOGO */
-    width: 30px; /* Ajusta este tamaño según sea necesario */
-    height: 30px;
-    margin-right: 10px;
+.sidebar-logo-img {
+  width: 28px;
+  height: 28px;
 }
 
 .sidebar-title {
-    font-size: 20px;
-    font-weight: 700;
-    color: #ffffff;
-    margin: 0;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #1e293b;
+  margin: 0;
 }
 
-/* ------------------------------------ */
-/* 3. NAVEGACIÓN PRINCIPAL */
-/* ------------------------------------ */
-
+/* --- NAV (El menú del medio) --- */
 .sidebar-nav {
-    flex-grow: 1; 
+  flex: 1; /* Ocupa todo el espacio sobrante */
+  display: flex;
+  flex-direction: column;
+  
+  /* Si la pantalla es enana, solo esta parte hace scroll */
+  overflow-y: auto; 
+  margin-bottom: 1rem;
 }
 
 .nav-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.nav-item {
-    margin-bottom: 5px;
-    transition: background-color 0.2s;
-    margin-right: 15px; 
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .nav-link {
-    display: flex;
-    align-items: center;
-    padding: 12px 20px;
-    color: rgba(255, 255, 255, 0.8);
-    text-decoration: none;
-    font-size: 15px;
-    font-weight: 500;
-    transition: color 0.2s;
-}
-
-.nav-link .icon {
-    margin-right: 10px;
-    font-size: 18px;
-}
-
-/* ESTADO ACTIVO (Ítem resaltado) */
-.nav-item.active {
-    background-color: #ffffff;
-    border-radius: 0 8px 8px 0; 
-    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  text-decoration: none;
+  color: #64748b;
+  font-weight: 600;
+  border-radius: 10px;
+  transition: all 0.2s;
 }
 
 .nav-item.active .nav-link {
-    color: #1b6558; 
-    font-weight: 600;
+  background-color: #eff6ff;
+  color: var(--primary-color);
 }
 
-/* ------------------------------------ */
-/* 4. FOOTER Y BOTONES INFERIORES */
-/* ------------------------------------ */
+.nav-item:hover .nav-link {
+  background-color: #f8fafc;
+  color: #1e293b;
+}
 
+/* --- FOOTER (Salir) --- */
 .sidebar-footer {
-    padding: 10px 20px 20px 20px;
-    height: 120px;
-}
-
-.footer-box {
-    background-color: rgba(255, 255, 255, 0.1); 
-    padding: 5px;
-    border-radius: 8px;
-    margin-bottom: 10px;
-}
-
-.btn-options {
-    width: 100%;
-    padding: 10px;
-    border: none;
-    border-radius: 6px;
-    background-color: transparent;
-    color: #ffffff;
-    font-size: 16px;
-    cursor: pointer;
-    opacity: 0.8;
+  /* Evita que se aplaste */
+  flex-shrink: 0; 
+  border-top: 1px solid var(--border-color);
+  padding-top: 1rem;
 }
 
 .btn-logout {
-    width: 100%;
-    padding: 10px;
-    border: none;
-    border-radius: 8px;
-    background-color: #047084; 
-    color: #ffffff;
-    font-size: 15px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background-color 0.2s;
+  width: 100%;
+  padding: 0.8rem;
+  background-color: #fef2f2; /* Rojo muy suave */
+  color: #ef4444; /* Rojo texto */
+  border: 1px solid #fee2e2;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .btn-logout:hover {
-    background-color: #296d97;
+  background-color: #fee2e2;
 }
 
-/* ------------------------------------ */
-/* 5. MEDIA QUERIES (RESPONSIVE) */
-/* ------------------------------------ */
-
+/* =========================================================
+   📱 MÓVIL: BARRA INFERIOR (Bottom Bar)
+   ========================================================= */
 @media (max-width: 768px) {
   .sidebar-container {
-    width: 64px;
-    padding: 10px 6px;
-    box-shadow: none;
+    position: fixed;
+    top: auto; /* Soltamos arriba */
+    bottom: 0; /* Pegado abajo */
+    left: 0;
+    width: 100%;
+    height: 70px; /* Altura fija para móvil */
+    
+    border-right: none;
+    border-top: 1px solid var(--border-color);
+    flex-direction: row; /* Elementos en fila */
+    padding: 0;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.05);
   }
 
-  .sidebar-header {
-    padding: 8px 6px 14px;
+  .sidebar-header, 
+  .sidebar-footer {
+    display: none; /* Ocultamos logo y salir en el menú rápido */
+  }
+
+  .sidebar-nav {
+    margin-bottom: 0;
+    overflow: visible;
+  }
+
+  .nav-list {
+    flex-direction: row;
+    height: 100%;
+    justify-content: space-around;
+    align-items: center;
+  }
+
+  .nav-item {
+    flex: 1;
+    display: flex;
     justify-content: center;
   }
-
-  .sidebar-logo-img {
-    width: 36px;
-    height: 36px;
-    margin-right: 0;
-  }
-
-  .sidebar-title { display: none; }
-
-  .nav-list { display: block; }
-
-  .nav-item { margin: 6px 0; margin-right: 0; }
 
   .nav-link {
+    flex-direction: column;
+    gap: 2px;
+    padding: 0.5rem;
+    font-size: 0.7rem;
+    background: transparent !important;
+  }
+  
+  .icon {
+    font-size: 1.4rem;
+    margin-bottom: 2px;
+  }
+
+  /* sidebar.css */
+
+/* ... (tus estilos anteriores) ... */
+
+/* 1. POR DEFECTO (PC): Ocultamos el item "mobile-only" */
+.mobile-only {
+  display: none;
+}
+
+/* 2. EN MÓVIL: Hacemos la magia */
+@media (max-width: 768px) {
+  
+  /* Mostramos el botón de salir en la barra */
+  .mobile-only {
+    display: flex; /* O block */
+    flex: 1;       /* Para que ocupe el mismo ancho que los otros */
     justify-content: center;
-    padding: 10px;
-    font-size: 0; /* esconde texto visualmente */
   }
-
-  .nav-link .icon {
-    margin: 0;
-    font-size: 18px;
-    line-height: 1;
-  }
-
+  
+  /* Aseguramos que el footer de escritorio siga oculto */
   .sidebar-footer {
-    padding: 8px 6px;
-    height: auto;
+    display: none;
   }
 
-  .btn-options, .btn-logout {
-    padding: 8px;
-    font-size: 0; /* solo se mostrará icono si existe */
-    width: 100%;
-    border-radius: 6px;
+  /* Ajuste visual para el icono de salir en móvil (rojo opcional) */
+  .mobile-only .icon {
+    color: #ef4444; 
   }
-
-  /* mostrar texto en hover (opcional, si quieres que aparezca label al pasar el mouse) */
-  .sidebar-container:hover { width: 220px; transition: width .18s ease; }
-  .sidebar-container:hover .nav-link { font-size: 15px; }
-  .sidebar-container:hover .sidebar-title { display: block; }
+  
+  .mobile-only span {
+    color: #ef4444;
+  }
+}
 }

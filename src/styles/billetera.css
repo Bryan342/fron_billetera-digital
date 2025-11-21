@@ -1,258 +1,201 @@
-/* ------------------------------------ */
-/* 1. LAYOUT PRINCIPAL Y CONTENEDOR */
-/* ------------------------------------ */
+/* billetera.css */
 
-.app-layout {
-    display: flex;
-    min-height: 100vh;
-    width: 100vw; 
-    background-color: #f7f9fc;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+:root {
+  --sidebar-width: 250px;
+  --bg-body: #f7f9fc;
 }
 
+/* 1. LAYOUT PRINCIPAL */
+.app-layout {
+  min-height: 100vh;
+  background-color: var(--bg-body);
+  font-family: 'Segoe UI', Roboto, sans-serif;
+  /* Quitamos display: flex porque el sidebar es fixed */
+  display: block; 
+}
+
+/* 2. ÁREA DE CONTENIDO (El arreglo) */
 .main-content-area {
-    flex-grow: 1;
-    padding: 30px; 
-    box-sizing: border-box; 
-    overflow-y: auto; 
+  /* DEJA EL HUECO PARA EL SIDEBAR */
+  margin-left: var(--sidebar-width);
+  width: calc(100% - var(--sidebar-width));
+  
+  /* EMPUJA EL CONTENIDO HACIA ABAJO */
+  padding-top: 5rem; /* Antes tenías 30px, muy poco */
+  padding-left: 2rem;
+  padding-right: 2rem;
+  padding-bottom: 2rem;
+  
+  box-sizing: border-box;
 }
 
 .billetera-container {
-    width: 100%;
-    max-width: 1200px; 
-    margin: 0 auto;
+  width: 100%;
+  max-width: 1000px; /* Un poco más contenido para que no se estire tanto */
+  margin: 0 auto;
 }
 
 /* ------------------------------------ */
-/* 2. BLOQUE: TARJETAS DE RESUMEN (GRID) */
+/* 3. BLOQUE: TARJETAS DE RESUMEN (GRID) */
 /* ------------------------------------ */
-
 .summary-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 25px; /* Espaciado entre las tarjetas */
-    margin-bottom: 30px;
+  display: grid;
+  /* Ajuste para que se vea mejor en pantallas anchas */
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 .summary-card {
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-    display: flex;
-    flex-direction: column;
+  padding: 1.5rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #e2e8f0;
+  background-color: white;
+}
+
+/* Estilos específicos de tarjeta */
+.savings-card {
+  background: linear-gradient(135deg, #eff6ff 0%, #ffffff 100%);
+  border-left: 5px solid #2563eb;
 }
 
 .card-title {
-    font-size: 14px;
-    font-weight: 500;
-    margin-bottom: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #64748b;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .card-value {
-    font-size: 30px;
-    font-weight: 700;
-    margin: 0 0 5px 0;
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #1e293b;
+  margin: 0;
 }
 
 .card-subtitle {
-    font-size: 12px;
-    color: #6c757d;
-    margin: 0;
-}
-
-/* COLORES ESPECÍFICOS DE LAS TARJETAS */
-.savings-card {
-    background-color: #f0f7f8; /* Azul muy claro */
-    color: #3182CE; /* Color del texto del saldo */
-}
-.savings-card .card-value {
-    color: #3182CE; 
-}
-
-.expenses-card {
-    background-color: #fcebeb; /* Rojo muy claro */
-    color: #DC3545;
-}
-.expenses-card .card-value {
-    color: #DC3545; 
-}
-
-.incomes-card {
-    background-color: #e8f9e8; /* Verde muy claro */
-    color: #28A745;
-}
-.incomes-card .card-value {
-    color: #28A745; 
+  font-size: 0.85rem;
+  color: #94a3b8;
+  margin-top: 0.5rem;
 }
 
 /* ------------------------------------ */
-/* 3. BLOQUE: HISTORIAL DE TRANSACCIONES */
+/* 4. HISTORIAL DE TRANSACCIONES */
 /* ------------------------------------ */
-
 .transactions-history-card {
-    background-color: #ffffff;
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  background-color: #ffffff;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e2e8f0;
 }
 
 .history-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #f1f5f9;
+  padding-bottom: 1rem;
 }
 
-.transactions-history-card h2 {
-    font-size: 20px;
-    font-weight: 600;
-    color: #333333;
-    margin: 0;
+.history-header h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
 }
 
-.btn-report {
-    padding: 8px 15px;
-    border: 1px solid #ced4da;
-    border-radius: 6px;
-    background-color: #ffffff;
-    color: #333;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-.btn-report:hover {
-    background-color: #f8f9fa;
-}
-
-/* ------------------------------------ */
-/* 4. TABLA DE TRANSACCIONES */
-/* ------------------------------------ */
-
+/* TABLA */
 .tabla-transacciones {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.tabla-transacciones thead {
-    border-bottom: 1px solid #dee2e6;
-    color: #6c757d;
-    font-size: 14px;
-    font-weight: 400;
+  width: 100%;
+  border-collapse: collapse;
 }
 
 .tabla-transacciones th {
-    padding: 12px 10px;
-    text-align: left;
-    white-space: nowrap;
-}
-
-.tabla-transacciones tbody tr {
-    border-bottom: 1px solid #f8f9fa; /* Líneas muy sutiles */
-    cursor: pointer;
-}
-.tabla-transacciones tbody tr:hover {
-    background-color: #f4f6f9;
+  text-align: left;
+  padding: 1rem;
+  color: #64748b;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-bottom: 1px solid #e2e8f0;
 }
 
 .tabla-transacciones td {
-    padding: 15px 10px;
-    font-size: 15px;
+  padding: 1rem;
+  vertical-align: middle;
+  border-bottom: 1px solid #f8fafc;
+  color: #334155;
+  font-size: 0.95rem;
 }
 
-/* Celda de descripción con ícono */
+.tabla-transacciones tr:last-child td {
+  border-bottom: none;
+}
+
+/* DETALLES TXN */
 .txn-description-cell {
-    display: flex;
-    align-items: center;
-    font-weight: 500;
-    color: #333;
-}
-
-.txn-icon-table {
-    width: 35px;
-    height: 35px;
-    border-radius: 6px;
-    background-color: #e9ecef; /* Fondo gris claro para el ícono */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-right: 15px;
-    font-size: 18px; /* Tamaño del emoji */
-}
-
-.txn-text-details {
-    display: flex;
-    flex-direction: column;
-}
-
-.txn-text-details p {
-    margin: 0;
-    line-height: 1.2;
+  display: flex;
+  flex-direction: column;
 }
 
 .txn-description-text {
-    font-size: 15px;
-    font-weight: 500;
-}
-.txn-text-details small {
-    font-size: 12px;
-    color: #999;
+  font-weight: 600;
+  color: #1e293b;
 }
 
-/* Alineación de monto */
-.text-right {
-    text-align: right;
-}
+/* MONTOS */
+.text-right { text-align: right; }
 
-/* Colores de Monto */
 .positivo {
-    color: #28A745;
-    font-weight: 700;
+  color: #16a34a; /* Verde moderno */
+  font-weight: 700;
+  background-color: #dcfce7;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  display: inline-block;
 }
+
 .negativo {
-    color: #333333; /* Negro estándar para gastos */
-    font-weight: 500;
+  color: #1e293b;
+  font-weight: 600;
 }
 
 .no-transactions-message {
-    text-align: center;
-    padding: 40px 0 20px;
-    color: #6c757d;
-    font-size: 16px;
+  text-align: center;
+  padding: 3rem;
+  color: #94a3b8;
+  font-style: italic;
 }
 
 /* ------------------------------------ */
-/* 5. MEDIA QUERIES (RESPONSIVIDAD) */
+/* 5. MÓVIL (EL FIX IMPORTANTE) */
 /* ------------------------------------ */
-
-@media (max-width: 1024px) {
-    .summary-grid {
-        grid-template-columns: repeat(2, 1fr); /* 2 columnas en tablet */
-        gap: 20px;
-    }
-}
-
 @media (max-width: 768px) {
-    .main-content-area {
-        padding: 20px 15px;
-    }
+  .main-content-area {
+    /* En móvil quitamos el margen izquierdo porque el sidebar desaparece/cambia */
+    margin-left: 0;
+    width: 100%;
+    
+    /* Padding superior suficiente para que no choque */
+    padding-top: 2rem; 
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-bottom: 6rem; /* Espacio abajo para la barra móvil */
+  }
 
-    .summary-grid {
-        grid-template-columns: 1fr; /* 1 columna en móvil */
-    }
+  .summary-grid {
+    grid-template-columns: 1fr;
+  }
 
-    /* Ocultar columnas menos importantes en móvil */
-    .tabla-transacciones thead th:nth-child(2), 
-    .tabla-transacciones tbody td:nth-child(2) {
-        display: none; /* Oculta Teléfono */
-    }
-}
-
-
-.no-transactions-message {
-    text-align: center;
-    padding: 40px 0 20px;
-    color: #6c757d;
-    font-size: 16px;
-    font-style: italic;
-    border-top: 1px solid #dee2e6; /* Agrega una línea sutil sobre el mensaje */
+  /* Ocultar columnas secundarias en móvil para que quepa la tabla */
+  .tabla-transacciones th:nth-child(2), 
+  .tabla-transacciones td:nth-child(2),
+  .tabla-transacciones th:nth-child(3), 
+  .tabla-transacciones td:nth-child(3) {
+    display: none;
+  }
 }

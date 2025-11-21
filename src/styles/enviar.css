@@ -1,176 +1,273 @@
-/* ------------------------------------ */
-/* 1. LAYOUT PRINCIPAL Y CONTENEDOR */
-/* ------------------------------------ */
+/* enviar.css */
+:root {
+  --primary-color: #4f46e5; /* Azul Fintech moderno */
+  --primary-hover: #4338ca;
+  --accent-color: #10b981; /* Verde éxito */
+  --bg-color: #f8fafc;      /* Fondo gris muy suave */
+  --text-dark: #1e293b;
+  --text-gray: #64748b;
+  --border-radius: 16px;
+  --shadow-card: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+}
 
-/* Estilo de fondo suave (similar al de la imagen) */
+/* Layout General */
 .app-layout {
-    background: linear-gradient(135deg, #e6f7ff 0%, #ffffff 50%, #fff0f5 100%);
-    display: flex;
-    min-height: 100vh;
-    width: 100vw;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  display: flex;
+  height: 100vh;
+  background-color: var(--bg-color);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-/* Área de contenido principal (derecha del Sidebar) */
 .content-area {
-    flex-grow: 1;
-    padding: 30px;
-    box-sizing: border-box; 
-    overflow-y: auto; 
+  flex: 1;
+  display: flex;
+  align-items: center; /* Centrado vertical */
+  justify-content: center; /* Centrado horizontal */
+  padding: 2rem;
+  overflow-y: auto;
 }
 
-.enviar-container {
-    width: 100%;
-    max-width: 550px; /* Ancho cómodo para el formulario */
-    margin: 0 auto; /* Centra el formulario en el área de contenido */
+/* La Tarjeta Principal */
+.card-transferencia {
+  background: white;
+  width: 100%;
+  max-width: 450px; /* Ancho tipo App Móvil */
+  padding: 2.5rem;
+  border-radius: 24px;
+  box-shadow: var(--shadow-card);
+  transition: transform 0.3s ease;
+  animation: fadeInUp 0.5s ease-out;
 }
 
-/* Título y subtítulo */
-.enviar-container h2 {
-    font-size: 28px;
-    font-weight: 600;
-    color: #333;
-    margin: 0 0 5px 0;
+/* Header */
+.card-header {
+  text-align: center;
+  margin-bottom: 2rem;
 }
 
-.header-subtitle {
-    font-size: 15px;
-    color: #6c757d;
-    margin: 0 0 20px 0;
+.card-header h2 {
+  color: var(--text-dark);
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
 }
 
-
-/* ------------------------------------ */
-/* 2. ESTILO DEL FORMULARIO Y SU TARJETA */
-/* ------------------------------------ */
-
-.enviar-container form {
-    /* La tarjeta blanca principal */
-    background-color: #ffffff;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); 
-    
-    /* Usamos flex para controlar el layout de los botones */
-    display: flex;
-    flex-wrap: wrap; 
-    justify-content: space-between;
+.sub-title {
+  color: var(--text-gray);
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
 }
 
-/* ------------------------------------ */
-/* 3. BLOQUE DE SALDO INFO (SIMULADO EN CSS) */
-/* ------------------------------------ */
-
-/* Este bloque simula la caja de "Saldo disponible" en la parte superior del formulario */
-.enviar-container form::before {
-    display: block;
-    width: 100%;
-    
-    /* Estilos del bloque */
-    background-color: #f0f7f8; 
-    border: 1px solid #d0e8ef;
-    padding: 15px;
-    border-radius: 8px;
-    margin-bottom: 25px;
-    
-    /* Formato de texto del saldo */
-    font-size: 16px;
-    font-weight: 600;
-    color: #3182CE; /* Azul principal */
+/* Formularios e Inputs */
+.form-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
-/* ------------------------------------ */
-/* 4. ESTILOS DE LABELS, INPUTS Y SELECTS */
-/* ------------------------------------ */
-
-.enviar-container label {
-    display: block;
-    font-size: 14px;
-    color: #495057;
-    margin-bottom: 8px;
-    margin-top: 20px; /* Separación vertical */
-    font-weight: 500;
-    flex-basis: 100%; /* Ocupa todo el ancho */
+.form-group label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-gray);
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-.enviar-container input,
-.enviar-container select {
-    width: 100%;
-    padding: 12px 15px;
-    border: 1px solid #ced4da;
-    border-radius: 8px;
-    box-sizing: border-box;
-    font-size: 16px;
-    transition: border-color 0.3s, box-shadow 0.3s;
-    background-color: #fcfcfc;
-    color: #333;
-    flex-basis: 100%; /* Ocupa todo el ancho */
+/* Input de Teléfono Estilizado */
+.input-with-status {
+  position: relative;
+  display: flex;
+  align-items: center;
 }
 
-.enviar-container input:focus,
-.enviar-container select:focus {
-    border-color: #00897b; 
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(0, 137, 123, 0.1);
+.input-modern {
+  width: 100%;
+  padding: 1rem 1rem 1rem 3rem; /* Espacio para el icono izquierdo si quisieras poner uno */
+  font-size: 1.1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  background-color: #f8fafc;
+  color: var(--text-dark);
+  transition: all 0.2s;
+  outline: none;
 }
 
-/* Nota: Para un diseño fiel, se debe usar la estructura input-with-currency que tu JSX no tiene.
-   Aquí se aplica un estilo genérico. */
-
-
-/* ------------------------------------ */
-/* 5. BOTONES DE ACCIÓN */
-/* ------------------------------------ */
-
-/* Estilo general para todos los botones */
-.enviar-container form button {
-    padding: 12px;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.3s, box-shadow 0.3s;
-    margin-top: 30px;
-    
-    /* Los botones deben estar alineados al final */
-    order: 100; /* Asegura que se vayan al final */
+.input-modern:focus {
+  border-color: var(--primary-color);
+  background-color: white;
+  box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
 }
 
-/* Botón de Submit (Confirmar Envío / Continuar) */
-.enviar-container form button:nth-child(1) { 
-    /* El 1er botón con order:100 será el principal */
-    background-color: #004d40; 
-    color: #ffffff;
-    flex-basis: calc(50% - 7.5px); /* Ocupa la mitad del ancho */
-    margin-right: 15px; 
-}
-.enviar-container form button:nth-child(1):hover {
-    background-color: #00332c;
+.input-error {
+  border-color: #ef4444 !important;
 }
 
-/* Simulación de Botón Limpiar (el segundo botón que no existe en tu JSX original) */
-/* Si tu JSX fuera: <button type="submit">Continuar</button><button type="button">Limpiar</button> */
-/* Si solo tienes un botón, este estilo no se aplica. */
+/* Icono de estado (Spinner / Check) */
+.status-icon {
+  position: absolute;
+  right: 1rem;
+  display: flex;
+  align-items: center;
+}
 
-/* ------------------------------------ */
-/* 6. RESPONSIVIDAD */
-/* ------------------------------------ */
+/* Input de Dinero (Hero Input) */
+.currency-input-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 2px solid #e2e8f0;
+  padding-bottom: 0.5rem;
+  transition: border-color 0.3s;
+}
 
-@media (max-width: 768px) {
-    .main-content-area {
-        padding: 20px 15px; 
-    }
-    
-    .enviar-container form {
-        padding: 20px;
-        gap: 0;
-    }
-    
-    /* Apilar botones en móvil */
-    .enviar-container form button:nth-child(1) {
-        flex-basis: 100%; 
-        margin-right: 0;
-        margin-bottom: 10px; 
-    }
+.currency-input-wrapper:focus-within {
+  border-bottom-color: var(--primary-color);
+}
+
+.currency-symbol {
+  font-size: 2.5rem;
+  font-weight: 300;
+  color: var(--text-gray);
+  margin-right: 0.5rem;
+}
+
+.amount-hero {
+  width: 100%;
+  border: none;
+  background: transparent;
+  font-size: 3rem; /* Texto gigante para el dinero */
+  font-weight: 700;
+  color: var(--text-dark);
+  text-align: center;
+  outline: none;
+  font-family: monospace; /* Para alinear números */
+}
+
+.amount-hero::placeholder {
+  color: #cbd5e1;
+}
+
+/* Mensajes de Error y Info */
+.error-text {
+  color: #ef4444;
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+  display: block;
+}
+
+.destinatario-badge {
+  margin-top: 0.5rem;
+  background-color: #eff6ff;
+  color: var(--primary-color);
+  padding: 0.5rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  animation: fadeIn 0.3s;
+}
+
+/* Botones */
+.btn-primary {
+  margin-top: 1rem;
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+  color: white;
+  padding: 1rem;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  width: 100%;
+}
+
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px -10px var(--primary-color);
+}
+
+.btn-primary:disabled {
+  background: #cbd5e1;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Pantalla de Éxito */
+.success-view {
+  text-align: center;
+  padding: 1rem 0;
+  animation: zoomIn 0.4s ease-out;
+}
+
+.success-icon-large {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  animation: bounce 1s infinite;
+}
+
+.amount-display {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--text-dark);
+  margin: 0.5rem 0;
+}
+
+.receiver-display {
+  color: var(--text-gray);
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+}
+
+.btn-secondary {
+  background: transparent;
+  border: 2px solid var(--primary-color);
+  color: var(--primary-color);
+  padding: 0.8rem 1.5rem;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+}
+
+.btn-secondary:hover {
+  background: #eff6ff;
+}
+
+/* Animaciones y Spinners */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes zoomIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.spinner-small {
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(79, 70, 229, 0.3);
+  border-radius: 50%;
+  border-top-color: var(--primary-color);
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
