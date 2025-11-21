@@ -5,12 +5,6 @@ import '../styles/billetera.css';
 // --- CONFIGURACIÓN ---
 const API_URL = 'http://localhost:3001/api/v1/wallets';
 
-// ⚠️ REEMPLAZA ESTOS VALORES CON LOS TUYOS ⚠️
-const MY_USER_ID = "4";
-const MY_WALLET_ID = 4;
-//Ingresar token generado para este caso
-const MY_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI0Iiwicm9sZSI6InVzZXIiLCJpYXQiOjE3NjM1MjQyMzgsImV4cCI6MTc2MzU1MzAzOH0.UkeTTf95AcBmjbRcTfrQXnWlDAhtrIqIzzkVDOizmDE";
-
 function Billetera() {
   const [saldo, setSaldo] = useState(0.00);
   const [transacciones, setTransacciones] = useState([]);
@@ -19,35 +13,54 @@ function Billetera() {
 
   useEffect(() => {
     const fetchData = async () => {
+      const token = localStorage.getItem('token');
+      const userData = JSON.parse(localStorage.getItem("userData"));
+      const userId = userData?.user_id;
+
+      const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      };
+
+      const response = await fetch(`${API_URL}/${userId}/balance`, { headers });
+
+      if (!response.ok) {
+        if (response.status === 404) throw new Error("Este usuario no tiene una billetera creada.");
+        if (response.status === 401) throw new Error("Sesión expirada o token inválido.");
+      }
+
+      const data = await response.json();
+      const walletId = data.wallet_id;
+
+      console.log("token: " + token)
+      console.log("user_id: " + userId)
+      console.log("walletId: " + walletId)
+
+      // Validación de seguridad: Si no hay token, redirigir al Login
+      if (!token) {
+        window.location.href = '/';
+        return;
+      }
       try {
         setLoading(true);
         setError(null);
 
-        const headers = {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${MY_TOKEN}`
-        };
-
-        // Intentamos conectar con el backend real
-        // Nota: Si esto falla, pasaremos al catch y usaremos datos demo
-        const [resSaldo, resLedger] = await Promise.all([
-          fetch(`${API_URL}/${MY_USER_ID}/balance`, { headers }),
-          fetch(`${API_URL}/${MY_WALLET_ID}/ledger`, { headers })
+        const [response, resLedger] = await Promise.all([
+          fetch(`${API_URL}/${userId}/balance`, { headers }),
+          fetch(`${API_URL}/${walletId}/ledger`, { headers })
         ]);
 
-        if (!resSaldo.ok || !resLedger.ok) {
-          throw new Error(`Error del servidor: ${resSaldo.status} / ${resLedger.status}`);
+        if (!response.ok || !resLedger.ok) {
+          throw new Error(`Error del servidor: ${response.status} / ${resLedger.status}`);
         }
 
-        const dataSaldo = await resSaldo.json();
+        const data = await response.json();
         const dataLedger = await resLedger.json();
 
-        processData(dataSaldo, dataLedger);
+        processData(data, dataLedger);
 
       } catch (err) {
         console.error("Error de conexión:", err);
-
-        // Guardas el error para usarlo en la interfaz
         setError("No se pudo conectar con el servidor. Intenta nuevamente.");
       } finally {
         setLoading(false);
@@ -57,8 +70,8 @@ function Billetera() {
     fetchData();
   }, []);
 
-  const processData = (dataSaldo, dataLedger) => {
-    setSaldo(parseFloat(dataSaldo.balance || 0));
+  const processData = (data, dataLedger) => {
+    setSaldo(parseFloat(data.balance || 0));
 
     const txnsFormateadas = Array.isArray(dataLedger) ? dataLedger.map(tx => {
       const isDebit = tx.type === 'DEBIT';
