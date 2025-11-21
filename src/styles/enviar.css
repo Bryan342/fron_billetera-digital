@@ -12,9 +12,9 @@
 }
 
 /* Área de contenido principal (derecha del Sidebar) */
-.main-content-area {
+.content-area {
     flex-grow: 1;
-    padding: 30px; 
+    padding: 30px;
     box-sizing: border-box; 
     overflow-y: auto; 
 }

@@ -5,7 +5,7 @@ import '../styles/enviar.css';
 // ==============================================================
 // 🔴 CONFIGURACIÓN DE ENDPOINTS
 // ==============================================================
-const URL_USERS_SERVICE = 'http://localhost:3000/users';           // Puerto 3000
+const URL_USERS_SERVICE = 'http://localhost:3005/users';           // Puerto 3000
 const URL_WALLET_SERVICE = 'http://localhost:3001/api/v1/wallets'; // Puerto 3001
 const URL_TX_SERVICE = 'http://localhost:3002/transactions';       // Puerto 3002
 
@@ -16,8 +16,8 @@ const decodeJwt = (token) => {
   try {
     const base64Url = token.split('.')[1];
     const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function (c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
     }).join(''));
     return JSON.parse(jsonPayload);
   } catch (error) {
@@ -31,7 +31,7 @@ function Enviar() {
   const [step, setStep] = useState(1);
   const [telefono, setTelefono] = useState('');
   const [monto, setMonto] = useState('');
-  
+
   // Datos lógicos internos
   const [senderWalletId, setSenderWalletId] = useState(null);   // MI Billetera
   const [receiverWalletId, setReceiverWalletId] = useState(null); // SU Billetera
@@ -54,18 +54,14 @@ function Enviar() {
         return;
       }
 
-      // 2. Desencriptar payload para sacar mi userId
-      const payload = decodeJwt(token);
-      if (!payload || !payload.userId) {
-        alert("Token inválido");
-        return;
-      }
-      const myUserId = payload.userId; // Ejemplo: 3
+      // 2. Sacar el userId del userData
+      const userData = JSON.parse(localStorage.getItem("userData"));
+      const userId = userData?.user_id;
 
       try {
         // 3. Consultar mi billetera al Wallet Service
         // GET http://localhost:3001/api/v1/wallets/{userId}/balance
-        const response = await fetch(`${URL_WALLET_SERVICE}/${myUserId}/balance`, {
+        const response = await fetch(`${URL_WALLET_SERVICE}/${userId}/balance`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`, // <--- SIEMPRE EL TOKEN
@@ -95,9 +91,9 @@ function Enviar() {
   // ==============================================================
   useEffect(() => {
     if (telefono.length !== 9) {
-        setReceiverWalletId(null); // Reset si borra el numero
-        setReceiverName('');
-        return;
+      setReceiverWalletId(null); // Reset si borra el numero
+      setReceiverName('');
+      return;
     }
 
     const timeoutId = setTimeout(() => {
@@ -124,7 +120,7 @@ function Enviar() {
       });
 
       if (!userRes.ok) throw new Error("Usuario no encontrado");
-      
+
       const userData = await userRes.json();
       // userData: { user_id: 1, email: "...", ... }
       const receiverUserId = userData.user_id;
@@ -140,7 +136,7 @@ function Enviar() {
 
       const walletData = await walletRes.json();
       // walletData: { wallet_id: 2, user_id: "1", ... }
-      
+
       setReceiverWalletId(walletData.wallet_id); // GUARDAMOS EL ID DE SU BILLETERA
       console.log("✅ Billetera Destino ID:", walletData.wallet_id);
 
@@ -159,7 +155,7 @@ function Enviar() {
   // ==============================================================
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!senderWalletId || !receiverWalletId) {
       alert("Faltan datos de las billeteras. Recarga la página o verifica el destinatario.");
       return;
@@ -173,50 +169,50 @@ function Enviar() {
 
     // Construir Body
     const payload = {
-        idempotencyKey: randomKey,
-        sender_wallet: senderWalletId,    // ID sacado del Token -> WalletService
-        receiver_wallet: receiverWalletId,// ID sacado del Telefono -> UserService -> WalletService
-        amount: parseFloat(monto),
-        currency: "SOL"                   // Siempre SOL
+      idempotencyKey: randomKey,
+      sender_wallet: senderWalletId,    // ID sacado del Token -> WalletService
+      receiver_wallet: receiverWalletId,// ID sacado del Telefono -> UserService -> WalletService
+      amount: parseFloat(monto),
+      currency: "SOL"                   // Siempre SOL
     };
 
     console.log("🚀 Enviando Transacción:", payload);
 
     try {
-        // POST http://localhost:3002/transactions
-        const response = await fetch(URL_TX_SERVICE, {
-            method: 'POST',
-            headers: { 
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}` // Siempre el token
-            },
-            body: JSON.stringify(payload)
-        });
+      // POST http://localhost:3002/transactions
+      const response = await fetch(URL_TX_SERVICE, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}` // Siempre el token
+        },
+        body: JSON.stringify(payload)
+      });
 
-        if (response.ok) {
-            const data = await response.json();
-            console.log("Exito:", data);
-            setStep(2); // Ir a pantalla de éxito
-        } else {
-            const errorData = await response.json();
-            alert(`Error: ${errorData.message || "Falló la transacción"}`);
-        }
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Exito:", data);
+        setStep(2); // Ir a pantalla de éxito
+      } else {
+        const errorData = await response.json();
+        alert(`Error: ${errorData.message || "Falló la transacción"}`);
+      }
 
     } catch (error) {
-        console.error("Error de red:", error);
-        alert("No se pudo conectar con el servidor de transacciones.");
+      console.error("Error de red:", error);
+      alert("No se pudo conectar con el servidor de transacciones.");
     } finally {
-        setIsProcessing(false);
+      setIsProcessing(false);
     }
   };
 
   // --- RENDERIZADO ---
   return (
-    <div className="layout-container">
+    <div className="app-layout">
       <Sidebar />
       <main className="content-area">
         <div className="card-transferencia">
-          
+
           {step === 1 ? (
             <>
               <header className="card-header">
@@ -224,7 +220,7 @@ function Enviar() {
               </header>
 
               <form onSubmit={handleSubmit} className="form-stack">
-                
+
                 {/* INPUT TELÉFONO */}
                 <div className="form-group">
                   <label>Celular del destinatario</label>
@@ -239,8 +235,8 @@ function Enviar() {
                       required
                     />
                     <div className="status-icon">
-                        {isSearching && <div className="spinner-small"></div>}
-                        {!isSearching && receiverWalletId && <span style={{color:'green'}}>✔</span>}
+                      {isSearching && <div className="spinner-small"></div>}
+                      {!isSearching && receiverWalletId && <span style={{ color: 'green' }}>✔</span>}
                     </div>
                   </div>
                   {searchError && <span className="error-text">{searchError}</span>}
@@ -265,8 +261,8 @@ function Enviar() {
                   </div>
                 </div>
 
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   className="btn-primary"
                   disabled={isProcessing || !receiverWalletId || !senderWalletId}
                 >
@@ -281,11 +277,11 @@ function Enviar() {
               <h3>¡Envío Exitoso!</h3>
               <p>Has enviado <strong>S/ {parseFloat(monto).toFixed(2)}</strong> a {receiverName}</p>
               <button className="btn-secondary" onClick={() => {
-                  setStep(1);
-                  setTelefono('');
-                  setMonto('');
-                  setReceiverWalletId(null);
-                  setReceiverName('');
+                setStep(1);
+                setTelefono('');
+                setMonto('');
+                setReceiverWalletId(null);
+                setReceiverName('');
               }}>
                 Nueva Operación
               </button>
