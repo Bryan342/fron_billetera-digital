@@ -111,7 +111,7 @@ function Billetera() {
   const processData = (data, dataLedger, userMap = {}) => {
     setSaldo(parseFloat(data.balance || 0));
 
-    const txnsFormateadas = Array.isArray(dataLedger) ? dataLedger.map(tx => {
+    const txnsFormateadas = Array.isArray(dataLedger) ? dataLedger.slice(-6).map(tx => {
       const isDebit = tx.type === 'DEBIT';
       const amountNum = parseFloat(tx.amount);
 
