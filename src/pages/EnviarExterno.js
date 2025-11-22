@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../css/enviarExterno.css'; 
+import '../styles/enviarExterno.css'; 
 
 // ==============================================================
 // CONFIGURACIÓN DE ENDPOINTS
