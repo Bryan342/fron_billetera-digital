@@ -116,7 +116,7 @@ function Billetera() {
       const amountNum = parseFloat(tx.amount);
 
       // Buscamos la info de la contraparte en el mapa que creamos
-      const counterpartyData = userMap[tx.counterparty_id] || { nombre: `trans via banco con id ${tx.external_transaction_id}`, telefono: '*********' };
+      const counterpartyData = userMap[tx.counterparty_id] || { nombre: `Pixel-Money ${tx.external_transaction_id}`, telefono: '*********' };
 
       return {
         id: tx.ledger_id,
