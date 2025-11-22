@@ -4,7 +4,7 @@ import '../styles/enviarExterno.css';
 // ==============================================================
 // CONFIGURACIÓN DE ENDPOINTS Y LLAVES
 // ==============================================================
-const API_BASE_URL = 'http://pixel-money.koyeb.app';
+const API_BASE_URL = 'https://pixel-money.koyeb.app';
 
 // Endpoint para validar si el usuario existe (GET)
 const URL_VALIDATE_PHONE = `${API_BASE_URL}/p2p/check`;
