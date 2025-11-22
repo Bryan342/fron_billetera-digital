@@ -116,13 +116,13 @@ function Billetera() {
       const amountNum = parseFloat(tx.amount);
 
       // Buscamos la info de la contraparte en el mapa que creamos
-      const counterpartyData = userMap[tx.counterparty_id] || { nombre: 'Desconocido', telefono: 'N/A' };
+      const counterpartyData = userMap[tx.counterparty_id] || { nombre: `trans via banco con id ${tx.external_transaction_id}`, telefono: '*********' };
 
       return {
         id: tx.ledger_id,
         descripcion: tx.description || `Transacción ${tx.external_transaction_id || 'N/A'}`,
-        contacto: counterpartyData.nombre || 'Desconocido',
-        telefono: counterpartyData.telefono || 'N/A',
+        contacto: counterpartyData.nombre || `trans via banco con id ${tx.external_transaction_id}`,
+        telefono: counterpartyData.telefono || '*********',
         fecha: tx.created_at ? new Date(tx.created_at).toLocaleDateString('es-PE', {
           day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
         }) : 'Fecha inválida',
