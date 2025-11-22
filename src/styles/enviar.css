@@ -238,6 +238,44 @@
   background: #eff6ff;
 }
 
+/* Tabs */
+.tabs-container {
+  display: flex;
+  gap: 8px;
+  background: #f3f4f6;
+  padding: 6px;
+  border-radius: 12px;
+  margin-bottom: 28px;
+}
+
+.tab-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: #6b7280;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tab-btn:hover:not(.active) {
+  background: rgba(0,0,0,0.03);
+  color: #4b5563;
+}
+
+.tab-btn.active {
+  background: white;
+  color: #4f46e5; /* Indigo 600 */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
 /* Animaciones y Spinners */
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(20px); }

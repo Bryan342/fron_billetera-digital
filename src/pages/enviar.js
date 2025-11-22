@@ -25,6 +25,11 @@ function Enviar() {
   const [searchError, setSearchError] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
 
+  // --- ESTADOS: TRANSFERENCIA INTERBANCARIA ---
+  const [activeTab, setActiveTab] = useState('interno'); // 'interno' | 'interbancario'
+  const [selectedBank, setSelectedBank] = useState('');
+  const [telefonoInterbank, setTelefonoInterbank] = useState('');
+
   // ==============================================================
   // 🔄 PASO 1: AL CARGAR LA PÁGINA (Obtener MI Billetera)
   // ==============================================================
@@ -67,6 +72,9 @@ function Enviar() {
   // 🔎 TRIGGER DE BÚSQUEDA DE DESTINATARIO
   // ==============================================================
   useEffect(() => {
+
+    if (activeTab !== 'interno') return;
+
     if (telefono.length !== 9) {
       setReceiverWalletId(null);
       setReceiverName('');
@@ -170,12 +178,40 @@ function Enviar() {
     }
   };
 
+  const handleInterbankSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!selectedBank || telefonoInterbank.length !== 9 || !monto) {
+      alert("Por favor completa todos los datos");
+      return;
+    }
+
+    setIsProcessing(true);
+
+    // SIMULACIÓN DE PROCESO (Aquí conectarás tu lógica luego)
+    setTimeout(() => {
+      setIsProcessing(false);
+      setStep(2);
+    }, 1500);
+  };
+
+  // Función para resetear formulario al cambiar de tab
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+    setMonto('');
+    setTelefono('');
+    setTelefonoInterbank('');
+    setSearchError(null);
+    setReceiverWalletId(null);
+    setReceiverName('');
+  };
+
   // --- RENDERIZADO ---
   return (
     <div className="app-layout">
       {/* El Sidebar se queda a la izquierda y ocupa el alto total */}
       <Sidebar />
-      
+
       <main className="content-area">
         <div className="card-transferencia">
 
@@ -186,84 +222,163 @@ function Enviar() {
                 <p className="sub-title">Transfiere al instante y sin comisiones</p>
               </header>
 
-              <form onSubmit={handleSubmit} className="form-stack">
+              {/* --- TABS (PESTAÑAS) --- */}
+              <div className="tabs-container">
+                <button
+                  className={`tab-btn ${activeTab === 'interno' ? 'active' : ''}`}
+                  onClick={() => handleTabChange('interno')}
+                >
+                  Banca Luca
+                </button>
+                <button
+                  className={`tab-btn ${activeTab === 'interbancario' ? 'active' : ''}`}
+                  onClick={() => handleTabChange('interbancario')}
+                >
+                  Otra Banca
+                </button>
+              </div>
+              {activeTab === 'interno' && (
+                <form onSubmit={handleSubmit} className="form-stack">
 
-                {/* INPUT TELÉFONO */}
-                <div className="form-group">
-                  <label>Celular del destinatario</label>
-                  <div className="input-with-status">
+                  {/* INPUT TELÉFONO */}
+                  <div className="form-group">
+                    <label>Celular del destinatario</label>
+                    <div className="input-with-status">
+                      <input
+                        type="text"
+                        placeholder="Ej: 999 123 456"
+                        maxLength={9}
+                        value={telefono}
+                        onChange={(e) => setTelefono(e.target.value.replace(/\D/g, ''))}
+                        className={`input-modern ${searchError ? 'input-error' : ''}`}
+                        required
+                      />
+                      <div className="status-icon">
+                        {isSearching && <div className="spinner-small"></div>}
+                        {!isSearching && receiverWalletId && <span style={{ color: '#10b981', fontSize: '1.2rem' }}>✔</span>}
+                      </div>
+                    </div>
+
+                    {/* Feedback de errores y éxito en búsqueda */}
+                    {searchError && <span className="error-text">{searchError}</span>}
+
+                    {receiverName && !searchError && (
+                      <div className="destinatario-badge">
+                        <span>👤</span>
+                        <span>Destino: <strong>{receiverName}</strong></span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* INPUT MONTO */}
+                  <div className="form-group">
+                    <label>¿Cuánto quieres enviar?</label>
+                    <div className="currency-input-wrapper">
+                      <span className="currency-symbol">S/</span>
+                      <input
+                        type="number"
+                        placeholder="0.00"
+                        value={monto}
+                        onChange={(e) => setMonto(e.target.value)}
+                        step="0.01"
+                        min="0.1"
+                        className="amount-hero"
+                        required
+                        disabled={!receiverWalletId}
+                      />
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="btn-primary"
+                    disabled={isProcessing || !receiverWalletId || !senderWalletId || !monto}
+                  >
+                    {isProcessing ? 'Procesando...' : 'Enviar Dinero'}
+                  </button>
+
+                </form>
+              )}
+
+              {/* === FORMULARIO INTERBANCARIO (OTRO BANCO) === */}
+              {activeTab === 'interbancario' && (
+                <form onSubmit={handleInterbankSubmit} className="form-stack animate-fade-in">
+
+                  {/* Selector de Banco */}
+                  <div className="form-group">
+                    <label>Selecciona el Banco</label>
+                    <select
+                      className="input-modern"
+                      value={selectedBank}
+                      onChange={(e) => setSelectedBank(e.target.value)}
+                      required
+                    >
+                      <option value="">-- Elige un banco --</option>
+                      <option value="XXXBANK">XXXbank</option>
+                    </select>
+                  </div>
+
+                  {/* Celular (Igual que interno) */}
+                  <div className="form-group">
+                    <label>Celular del destinatario</label>
                     <input
                       type="text"
                       placeholder="Ej: 999 123 456"
                       maxLength={9}
-                      value={telefono}
-                      onChange={(e) => setTelefono(e.target.value.replace(/\D/g, ''))}
-                      className={`input-modern ${searchError ? 'input-error' : ''}`}
+                      value={telefonoInterbank}
+                      onChange={(e) => setTelefonoInterbank(e.target.value.replace(/\D/g, ''))}
+                      className="input-modern"
                       required
                     />
-                    <div className="status-icon">
-                      {isSearching && <div className="spinner-small"></div>}
-                      {!isSearching && receiverWalletId && <span style={{ color: '#10b981', fontSize: '1.2rem' }}>✔</span>}
+                  </div>
+
+                  {/* Monto */}
+                  <div className="form-group">
+                    <label>Monto a enviar</label>
+                    <div className="currency-input-wrapper">
+                      <span className="currency-symbol">S/</span>
+                      <input
+                        type="number"
+                        placeholder="0.00"
+                        value={monto}
+                        onChange={(e) => setMonto(e.target.value)}
+                        step="0.01"
+                        className="amount-hero"
+                        required
+                      />
                     </div>
                   </div>
-                  
-                  {/* Feedback de errores y éxito en búsqueda */}
-                  {searchError && <span className="error-text">{searchError}</span>}
-                  
-                  {receiverName && !searchError && (
-                    <div className="destinatario-badge">
-                      <span>👤</span> 
-                      <span>Destino: <strong>{receiverName}</strong></span>
-                    </div>
-                  )}
-                </div>
 
-                {/* INPUT MONTO */}
-                <div className="form-group">
-                  <label>¿Cuánto quieres enviar?</label>
-                  <div className="currency-input-wrapper">
-                    <span className="currency-symbol">S/</span>
-                    <input
-                      type="number"
-                      placeholder="0.00"
-                      value={monto}
-                      onChange={(e) => setMonto(e.target.value)}
-                      step="0.01"
-                      min="0.1"
-                      className="amount-hero"
-                      required
-                      disabled={!receiverWalletId}
-                    />
-                  </div>
-                </div>
+                  <button
+                    type="submit"
+                    className="btn-primary btn-interbank"
+                    disabled={isProcessing || !selectedBank || telefonoInterbank.length !== 9 || !monto}
+                  >
+                    {isProcessing ? 'Validando...' : 'Transferir a Banco'}
+                  </button>
+                </form>
+              )}
 
-                <button
-                  type="submit"
-                  className="btn-primary"
-                  disabled={isProcessing || !receiverWalletId || !senderWalletId || !monto}
-                >
-                  {isProcessing ? 'Procesando...' : 'Enviar Dinero'}
-                </button>
-
-              </form>
             </>
           ) : (
             <div className="success-view">
               <div className="success-icon-large">🎉</div>
               <h3>¡Envío Exitoso!</h3>
-              
+
               <div className="amount-display">
                 S/ {parseFloat(monto).toFixed(2)}
               </div>
-              
+
               <p className="receiver-display">Enviado a <strong>{receiverName}</strong></p>
-              
+
               <button className="btn-secondary" onClick={() => {
                 setStep(1);
                 setTelefono('');
+                setTelefonoInterbank('');
                 setMonto('');
                 setReceiverWalletId(null);
                 setReceiverName('');
+                setSelectedBank('');
               }}>
                 Realizar otra operación
               </button>
