@@ -7,7 +7,7 @@ const URL_USERS_SERVICE = 'https://userservicesanti.onrender.com/users';
 const URL_WALLET_SERVICE = 'https://billetera-production.up.railway.app/api/v1/wallets';
 const URL_TX_SERVICE = 'https://transactionmicroservicios-production.up.railway.app/transactions';
 
-function EnviarInterno() {
+function Enviar() {
   const [step, setStep] = useState(1);
   const [telefono, setTelefono] = useState('');
   const [monto, setMonto] = useState('');
