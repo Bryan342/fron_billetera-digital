@@ -2,12 +2,19 @@ import React, { useState, useEffect } from 'react';
 import Sidebar from '../components/sidebar';
 import '../styles/enviar.css';
 
+// 👇 1. IMPORTAMOS EL COMPONENTE EXTERNO
+import EnviarExterno from './EnviarExterno'; 
+
 // 🔴 ENDPOINTS REALES (Solo para uso interno)
 const URL_USERS_SERVICE = 'https://userservicesanti.onrender.com/users';
 const URL_WALLET_SERVICE = 'https://billetera-production.up.railway.app/api/v1/wallets';
 const URL_TX_SERVICE = 'https://transactionmicroservicios-production.up.railway.app/transactions';
 
 function Enviar() {
+  // 👇 2. ESTADO PARA CONTROLAR LAS PESTAÑAS ('interno' o 'externo')
+  const [activeTab, setActiveTab] = useState('interno'); 
+
+  // --- LÓGICA ORIGINAL DE ENVIAR.JS (NO TOCADA) ---
   const [step, setStep] = useState(1);
   const [telefono, setTelefono] = useState('');
   const [monto, setMonto] = useState('');
@@ -123,79 +130,131 @@ function Enviar() {
       setIsProcessing(false);
     }
   };
+  // --- FIN LÓGICA ORIGINAL ---
 
   return (
     <div className="app-layout">
       <Sidebar />
       <main className="content-area">
-        <div className="card-transferencia">
-          {step === 1 ? (
-            <>
-              <header className="card-header">
-                <h2>Banca Luca</h2>
-                <p className="sub-title">Transferencias internas gratuitas</p>
-              </header>
-
-              <form onSubmit={handleTransfer} className="form-stack">
-                <div className="form-group">
-                  <label>Celular del destinatario</label>
-                  <div className="input-with-status">
-                    <input
-                      type="text"
-                      placeholder="Ej: 999 000 111"
-                      maxLength={9}
-                      value={telefono}
-                      onChange={(e) => setTelefono(e.target.value.replace(/\D/g, ''))}
-                      className={`input-modern ${searchError ? 'input-error' : ''}`}
-                      required
-                    />
-                    <div className="status-icon">
-                      {isSearching && <div className="spinner-small"></div>}
-                      {!isSearching && receiverWalletId && <span style={{ color: '#10b981' }}>✔</span>}
-                    </div>
-                  </div>
-                  {searchError && <span className="error-text">{searchError}</span>}
-                  {receiverName && !searchError && (
-                    <div className="destinatario-badge">👤 {receiverName}</div>
-                  )}
-                </div>
-
-                <div className="form-group">
-                  <label>Monto</label>
-                  <div className="currency-input-wrapper">
-                    <span className="currency-symbol">S/</span>
-                    <input
-                      type="number"
-                      placeholder="0.00"
-                      value={monto}
-                      onChange={(e) => setMonto(e.target.value)}
-                      className="amount-hero"
-                      required
-                    />
-                  </div>
-                </div>
-
-                <button
-                  type="submit"
-                  className="btn-primary"
-                  disabled={isProcessing || !receiverWalletId || !monto}
-                >
-                  {isProcessing ? 'Procesando...' : 'Transferir Ahora'}
-                </button>
-              </form>
-            </>
-          ) : (
-            <div className="success-view">
-              <div className="success-icon-large">🎉</div>
-              <h3>¡Envío Exitoso!</h3>
-              <div className="amount-display">S/ {parseFloat(monto).toFixed(2)}</div>
-              <p>Destino: <strong>{receiverName}</strong></p>
-              <button className="btn-secondary" onClick={() => {
-                setStep(1); setTelefono(''); setMonto(''); setReceiverName('');
-              }}>Nueva Operación</button>
-            </div>
-          )}
+        
+        {/* 👇 3. BARRA DE NAVEGACIÓN TIPO TABS (Estilos inline para rápido funcionamiento) */}
+        <div style={{ 
+            display: 'flex', 
+            justifyContent: 'center', 
+            marginBottom: '20px', 
+            gap: '15px' 
+        }}>
+            <button 
+                onClick={() => setActiveTab('interno')}
+                style={{
+                    padding: '10px 20px',
+                    border: 'none',
+                    borderRadius: '20px',
+                    cursor: 'pointer',
+                    fontWeight: 'bold',
+                    backgroundColor: activeTab === 'interno' ? '#2563eb' : '#e5e7eb',
+                    color: activeTab === 'interno' ? 'white' : '#374151',
+                    transition: 'all 0.3s'
+                }}
+            >
+                A Contacto Luca
+            </button>
+            <button 
+                onClick={() => setActiveTab('externo')}
+                style={{
+                    padding: '10px 20px',
+                    border: 'none',
+                    borderRadius: '20px',
+                    cursor: 'pointer',
+                    fontWeight: 'bold',
+                    backgroundColor: activeTab === 'externo' ? '#9333ea' : '#e5e7eb',
+                    color: activeTab === 'externo' ? 'white' : '#374151',
+                    transition: 'all 0.3s'
+                }}
+            >
+                A Otros Bancos
+            </button>
         </div>
+
+        {/* 👇 4. RENDERIZADO CONDICIONAL */}
+        
+        {activeTab === 'externo' ? (
+             /* MUESTRA EL COMPONENTE EXTERNO */
+             <div className="fade-in"> 
+                <EnviarExterno />
+             </div>
+        ) : (
+            /* MUESTRA TU COMPONENTE ORIGINAL (LUCA) */
+            <div className="card-transferencia fade-in">
+            {step === 1 ? (
+                <>
+                <header className="card-header">
+                    <h2>Banca Luca</h2>
+                    <p className="sub-title">Transferencias internas gratuitas</p>
+                </header>
+
+                <form onSubmit={handleTransfer} className="form-stack">
+                    <div className="form-group">
+                    <label>Celular del destinatario</label>
+                    <div className="input-with-status">
+                        <input
+                        type="text"
+                        placeholder="Ej: 999 000 111"
+                        maxLength={9}
+                        value={telefono}
+                        onChange={(e) => setTelefono(e.target.value.replace(/\D/g, ''))}
+                        className={`input-modern ${searchError ? 'input-error' : ''}`}
+                        required
+                        />
+                        <div className="status-icon">
+                        {isSearching && <div className="spinner-small"></div>}
+                        {!isSearching && receiverWalletId && <span style={{ color: '#10b981' }}>✔</span>}
+                        </div>
+                    </div>
+                    {searchError && <span className="error-text">{searchError}</span>}
+                    {receiverName && !searchError && (
+                        <div className="destinatario-badge">👤 {receiverName}</div>
+                    )}
+                    </div>
+
+                    <div className="form-group">
+                    <label>Monto</label>
+                    <div className="currency-input-wrapper">
+                        <span className="currency-symbol">S/</span>
+                        <input
+                        type="number"
+                        placeholder="0.00"
+                        value={monto}
+                        onChange={(e) => setMonto(e.target.value)}
+                        className="amount-hero"
+                        required
+                        />
+                    </div>
+                    </div>
+
+                    <button
+                    type="submit"
+                    className="btn-primary"
+                    disabled={isProcessing || !receiverWalletId || !monto}
+                    >
+                    {isProcessing ? 'Procesando...' : 'Transferir Ahora'}
+                    </button>
+                </form>
+                </>
+            ) : (
+                <div className="success-view">
+                <div className="success-icon-large">🎉</div>
+                <h3>¡Envío Exitoso!</h3>
+                <div className="amount-display">S/ {parseFloat(monto).toFixed(2)}</div>
+                <p>Destino: <strong>{receiverName}</strong></p>
+                <button className="btn-secondary" onClick={() => {
+                    setStep(1); setTelefono(''); setMonto(''); setReceiverName('');
+                }}>Nueva Operación</button>
+                </div>
+            )}
+            </div>
+        )}
+
       </main>
     </div>
   );
