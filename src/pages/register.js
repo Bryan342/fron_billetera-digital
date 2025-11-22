@@ -23,7 +23,7 @@ function Register() {
     }
 
     try {
-      const authResponse = await fetch("http://localhost:8080/api/v1/auth/register", { //CAMBIAR RUTA
+      const authResponse = await fetch("https://authmicroservice-production.up.railway.app/api/v1/auth/register", { //CAMBIAR RUTA
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -50,7 +50,7 @@ function Register() {
       localStorage.setItem("token", token);
 
 
-      await fetch("http://localhost:3005/users", { //CAMBIAR RUTA
+      await fetch("https://userservicesanti.onrender.com/users", { //CAMBIAR RUTA
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -3,8 +3,8 @@ import Sidebar from '../components/sidebar';
 import '../styles/billetera.css';
 
 // --- CONFIGURACIÓN ---
-const API_URL = 'http://localhost:3001/api/v1/wallets';
-const URL_USERS_SERVICE = 'http://localhost:3005/users';
+const API_URL = 'https://billetera-production.up.railway.app/api/v1/wallets';
+const URL_USERS_SERVICE = 'https://userservicesanti.onrender.com/users';
 
 function Billetera() {
   const [saldo, setSaldo] = useState(0.00);

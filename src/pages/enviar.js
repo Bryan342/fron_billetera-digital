@@ -5,9 +5,9 @@ import '../styles/enviar.css';
 // ==============================================================
 // 🔴 CONFIGURACIÓN DE ENDPOINTS
 // ==============================================================
-const URL_USERS_SERVICE = 'http://localhost:3005/users';
-const URL_WALLET_SERVICE = 'http://localhost:3001/api/v1/wallets';
-const URL_TX_SERVICE = 'http://localhost:3002/transactions';
+const URL_USERS_SERVICE = 'https://userservicesanti.onrender.com/users';
+const URL_WALLET_SERVICE = 'https://billetera-production.up.railway.app/api/v1/wallets';
+const URL_TX_SERVICE = 'https://transactionmicroservicios-production.up.railway.app/transactions';
 
 function Enviar() {
   // --- ESTADOS ---
