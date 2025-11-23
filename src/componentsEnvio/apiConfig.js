@@ -1,5 +1,5 @@
 // 👇 1. CAMBIA ESTA VARIABLE A TU ANTOJO
-const INTEROP_HOST = 'http://localhost:3000'; 
+const INTEROP_HOST = 'https://centralized-wallet-api-production.up.railway.app'; 
 
 // --- CONFIGURACIÓN DE RUTAS ---
 export const API_URLS = {
