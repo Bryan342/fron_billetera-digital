@@ -23,7 +23,7 @@ function Register() {
     }
 
     try {
-      const authResponse = await fetch("https://authmicroservice-production.up.railway.app/api/v1/auth/register", { //CAMBIAR RUTA
+      const authResponse = await fetch("https://auth-microservice-vxcl.onrender.com/api/v1/auth/register", { //CAMBIAR RUTA
         method: "POST",
         headers: {
           "Content-Type": "application/json",
