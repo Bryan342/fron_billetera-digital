@@ -1,240 +1,230 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Sidebar from '../components/sidebar';
+import { Wifi, ArrowDownCircle, ArrowUpCircle, CreditCard, Loader2 } from 'lucide-react';
 import '../styles/billetera.css';
 
 // --- CONFIGURACIÓN ---
-const API_URL = 'https://billetera-production.up.railway.app/api/v1/wallets';
-const URL_USERS_SERVICE = 'https://userservicesanti.onrender.com/users';
+const API_BASE = 'https://billetera-production.up.railway.app/api/v1/wallets';
+const POLLING_INTERVAL = 5000; // Actualizar cada 5 segundos
 
 function Billetera() {
   const [saldo, setSaldo] = useState(0.00);
-  const [transacciones, setTransacciones] = useState([]);
+  const [allTransactions, setAllTransactions] = useState([]); // Todos los datos crudos
+  const [visibleTransactions, setVisibleTransactions] = useState([]); // Datos visibles según paginación
+  const [visibleCount, setVisibleCount] = useState(10); // Cantidad a mostrar
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [phone, setPhone] = useState('');
+
+  // Referencia para saber si el componente sigue montado (evita errores de memoria)
+  const isMounted = useRef(true);
 
   useEffect(() => {
-    const fetchData = async () => {
+    isMounted.current = true;
+
+    const fetchData = async (isBackgroundRefresh = false) => {
       const token = localStorage.getItem('token');
       const userData = JSON.parse(localStorage.getItem("userData"));
 
-      const userId = userData?.user_id;
-      const phone = userData.phone;
-
-      setPhone(phone || '');
+      if (!token || !userData) {
+        window.location.href = '/';
+        return;
+      }
 
       const headers = {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       };
 
-      const response = await fetch(`${API_URL}/${userId}/balance`, { headers });
-
-      if (!response.ok) {
-        if (response.status === 404) throw new Error("Este usuario no tiene una billetera creada.");
-        if (response.status === 401) throw new Error("Sesión expirada o token inválido.");
-      }
-
-      const data = await response.json();
-      const walletId = data.wallet_id;
-
-      // Validación de seguridad: Si no hay token, redirigir al Login
-      if (!token) {
-        window.location.href = '/';
-        return;
-      }
       try {
-        setLoading(true);
-        setError(null);
+        // Solo mostramos el spinner de carga la primera vez.
+        // En las actualizaciones automáticas (background) no bloqueamos la pantalla.
+        if (!isBackgroundRefresh) setLoading(true);
 
-        const [response, resLedger] = await Promise.all([
-          fetch(`${API_URL}/${userId}/balance`, { headers }),
-          fetch(`${API_URL}/${walletId}/ledger`, { headers })
-        ]);
-
-        if (!response.ok || !resLedger.ok) {
-          throw new Error(`Error del servidor: ${response.status} / ${resLedger.status}`);
+        // 1. Obtener Balance y ID de Billetera
+        const resBalance = await fetch(`${API_BASE}/${userData.user_id}/balance`, { headers });
+        
+        if (resBalance.status === 401) {
+           localStorage.clear();
+           window.location.href = '/';
+           return;
+        }
+        if (!resBalance.ok) throw new Error("Error al sincronizar saldo");
+        
+        const dataBalance = await resBalance.json();
+        
+        if (isMounted.current) {
+            setSaldo(parseFloat(dataBalance.balance || 0));
         }
 
-        const data = await response.json();
+        // 2. Obtener Historial Enriquecido
+        const resLedger = await fetch(`${API_BASE}/${dataBalance.wallet_id}/ledger-enriched`, { headers });
+        
+        if (!resLedger.ok) throw new Error("Error obteniendo movimientos");
+        
         const dataLedger = await resLedger.json();
 
-        // Obtenemos IDs únicos de las contrapartes para no hacer llamadas repetidas
-        const uniqueWalletCounterpartyIds = [...new Set(dataLedger
-          .map(tx => tx.counterparty_id)
-          .filter(id => id) // Filtramos nulos
-        )];
+        // Ordenar por fecha (más reciente primero)
+        const sortedLedger = Array.isArray(dataLedger) ? dataLedger.sort((a, b) => 
+          new Date(b.created_at) - new Date(a.created_at)
+        ) : [];
 
-        // Mapa para guardar la info de usuarios
-        const userMap = {};
-
-        // Consultamos en paralelo
-        await Promise.all(uniqueWalletCounterpartyIds.map(async (counterpartyWalletId) => {
-          try {
-            // --- SALTO 1: Wallet Service (¿De quién es esta wallet?) ---
-            // Llamamos al endpoint nuevo que creamos: GET /api/v1/wallets/:walletId
-            const resWalletInfo = await fetch(`${API_URL}/${counterpartyWalletId}`, { headers });
-
-            if (!resWalletInfo.ok) return; // Si falla, lo dejamos como desconocido
-
-            const walletInfo = await resWalletInfo.json();
-            const targetUserId = walletInfo.user_id; // ¡Aquí tenemos el ID del usuario!
-
-            // --- SALTO 2: User Service (¿Quién es este usuario?) ---
-            const resUserInfo = await fetch(`${URL_USERS_SERVICE}/${targetUserId}`, { headers });
-
-            if (resUserInfo.ok) {
-              const userData = await resUserInfo.json();
-              userMap[counterpartyWalletId] = {
-                nombre: userData.email.split("@")[0] || 'Usuario',
-                telefono: userData.phone || 'N/A'
-              };
-            }
-          } catch (e) {
-            console.warn(`No se pudo cargar usuario ${counterpartyWalletId}`, e);
-          }
-        }));
-
-        processData(data, dataLedger, userMap);
+        if (isMounted.current) {
+            setAllTransactions(sortedLedger);
+            // Nota: visibleTransactions se actualiza automáticamente gracias al useEffect de abajo
+        }
 
       } catch (err) {
-        console.error("Error de conexión:", err);
-        setError("No se pudo conectar con el servidor. Intenta nuevamente.");
+        console.error(err);
+        if (isMounted.current && !isBackgroundRefresh) {
+            setError(err.message);
+        }
       } finally {
-        setLoading(false);
+        if (isMounted.current && !isBackgroundRefresh) {
+            setLoading(false);
+        }
       }
     };
 
-    fetchData();
+    // 1. Llamada inicial inmediata
+    fetchData(false);
+
+    // 2. Configurar el intervalo para actualizar cada 5 seg
+    const intervalo = setInterval(() => {
+        fetchData(true); // true = actualización silenciosa
+    }, POLLING_INTERVAL);
+
+    // 3. Limpieza al salir
+    return () => {
+        isMounted.current = false;
+        clearInterval(intervalo);
+    };
   }, []);
 
-  const processData = (data, dataLedger, userMap = {}) => {
-    setSaldo(parseFloat(data.balance || 0));
+  // Efecto para manejar la paginación y actualizaciones de datos
+  useEffect(() => {
+    if (allTransactions.length > 0) {
+      // Mantenemos la cantidad que el usuario haya decidido ver (visibleCount)
+      setVisibleTransactions(allTransactions.slice(0, visibleCount));
+    }
+  }, [visibleCount, allTransactions]);
 
-    const txnsFormateadas = Array.isArray(dataLedger) ? dataLedger.map(tx => {
-      const isDebit = tx.type === 'DEBIT';
-      const amountNum = parseFloat(tx.amount);
-
-      // Buscamos la info de la contraparte en el mapa que creamos
-      const counterpartyData = userMap[tx.counterparty_id] || { nombre: `Pixel-Money ${tx.external_transaction_id}`, telefono: '*********' };
-
-      return {
-        id: tx.ledger_id,
-        descripcion: tx.description || `Transacción ${tx.external_transaction_id || 'N/A'}`,
-        contacto: counterpartyData.nombre || `trans via banco con id ${tx.external_transaction_id}`,
-        telefono: counterpartyData.telefono || '*********',
-        fecha: tx.created_at ? new Date(tx.created_at).toLocaleDateString('es-PE', {
-          day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
-        }) : 'Fecha inválida',
-        monto: isDebit ? -amountNum : amountNum
-      };
-    }) : [];
-
-    setTransacciones(txnsFormateadas);
-
+  const handleLoadMore = () => {
+    setVisibleCount(prev => prev + 10);
   };
-  // Función para formatear el monto en la tabla
-  const formatMonto = (monto) => {
-    const absMonto = Math.abs(monto).toFixed(2);
-    return monto > 0 ? `+S/ ${absMonto}` : `-S/ ${absMonto}`;
+
+  // --- FORMATEADORES ---
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('es-PE', { style: 'currency', currency: 'PEN' }).format(amount);
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return '';
+    return new Date(dateString).toLocaleDateString('es-PE', { 
+      day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' 
+    });
   };
 
   if (loading) return (
-    <div className="flex h-screen w-full items-center justify-center bg-gray-50">
-      <div className="text-center">
-        <div className="w-16 h-16 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-        <p className="text-gray-600 font-medium">Cargando tu billetera...</p>
-      </div>
+    <div className="loading-container">
+      <Loader2 className="spinner" size={48} />
+      <p>Sincronizando billetera...</p>
     </div>
   );
 
-  if (error) return (
-    <div className="flex h-screen w-full items-center justify-center bg-gray-50">
-      <div className="text-center">
-        <div className="w-16 h-16 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-        <p className="text-gray-600 font-medium">{error}</p>
-      </div>
-    </div>
-  );
+  if (error) return <div className="error-screen">⚠️ {error}</div>;
 
   return (
-    <div className="app-layout">
+    <div className="billetera-layout">
+      {/* SIDEBAR FIJO */}
       <Sidebar />
-      <div className="main-content-area">
-        <div className="billetera-container">
 
-          {/* Bloque: Tarjetas de Resumen */}
-          <div className="summary-grid">
-
-            {/* 1. Monto de Ahorros */}
-            <div className="summary-card savings-card">
-              <p className="card-title">Monto de Ahorros</p>
-              <h3 className="card-value">${saldo.toFixed(2)}</h3>
-              <p className="card-subtitle">Balance disponible</p>
+      {/* CONTENIDO PRINCIPAL */}
+      <main className="billetera-content">
+        
+        <div className="content-wrapper">
+          {/* 1. TARJETA VIRTUAL CSS */}
+          <section className="card-section">
+            <div className="virtual-card fade-in-up">
+              <div className="card-bg"></div>
+              <div className="card-top">
+                <div className="card-chip">
+                  <div className="chip-line"></div>
+                  <div className="chip-line"></div>
+                  <div className="chip-line"></div>
+                  <div className="chip-line"></div>
+                </div>
+                <Wifi className="contactless-icon" size={28} />
+              </div>
+              <div className="card-body">
+                <span className="card-label">Saldo Disponible</span>
+                <h1 className="card-balance">{formatCurrency(saldo)}</h1>
+              </div>
+              <div className="card-footer">
+                <div className="card-holder">
+                  <span className="holder-label">Titular</span>
+                  <span className="holder-name">USUARIO REGISTRADO</span>
+                </div>
+                <div className="card-logo">
+                  <div className="circle c1"></div>
+                  <div className="circle c2"></div>
+                </div>
+              </div>
             </div>
+          </section>
 
-            {/* 2. Gastos Este Mes */}
-            {/* <div className="summary-card expenses-card">
-              <p className="card-title">Gastos Este Mes</p>
-              <h3 className="card-value">${billetera.gastosMes.toFixed(2)}</h3>
-              <p className="card-subtitle">Últimos 30 días</p>
-            </div> */}
-
-            {/* 3. Ingresos Este Mes */}
-            {/* <div className="summary-card incomes-card">
-              <p className="card-title">Ingresos Este Mes</p>
-              <h3 className="card-value">${billetera.ingresosMes.toFixed(2)}</h3>
-              <p className="card-subtitle">Últimos 30 días</p>
-            </div> */}
-
-          </div>
-
-          {/* Bloque: Historial de Transacciones */}
-          <div className="transactions-history-card">
-            <div className="history-header">
-              <h2>Últimas transacciones</h2>
-            </div>
-
-            {/* RENDERIZADO CONDICIONAL DE LA TABLA */}
-            {transacciones.length > 0 ? (
-              <table className="tabla-transacciones">
-                <thead>
-                  <tr>
-                    <th>Contacto</th>
-                    <th>Teléfono</th>
-                    <th>Fecha</th>
-                    <th className="text-right">Monto</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {transacciones.map((txn, index) => (
-                    <tr key={txn.id || index}>
-                      {/* Celda de Descripción con Ícono */}
-                      <td className="txn-description-cell">
-                        <div className="txn-text-details">
-                          <p className="txn-description-text">{txn.contacto}</p>
+          {/* 2. LISTA DE MOVIMIENTOS */}
+          <section className="transactions-section fade-in-up delay-1">
+            <h3 className="section-title">Últimos Movimientos</h3>
+            
+            {visibleTransactions.length > 0 ? (
+              <div className="transactions-list">
+                {visibleTransactions.map((tx) => {
+                  const isDebit = tx.type === 'DEBIT';
+                  const amountClass = isDebit ? 'amount-debit' : 'amount-credit';
+                  const sign = isDebit ? '-' : '+';
+                  const contactName = tx.counterparty_details?.fullname || 'Desconocido';
+                  
+                  return (
+                    <div key={tx.ledger_id} className="transaction-item">
+                      <div className="tx-left">
+                        <div className={`avatar-circle ${isDebit ? 'bg-red' : 'bg-green'}`}>
+                          {isDebit ? <ArrowUpCircle size={20}/> : <ArrowDownCircle size={20}/>}
                         </div>
-                      </td>
-
-                      <td>{txn.telefono}</td>
-                      <td>{txn.fecha}</td>
-
-                      {/* Celda de Monto */}
-                      <td className={`txn-monto-cell text-right ${txn.monto < 0 ? 'negativo' : 'positivo'}`}>
-                        {formatMonto(txn.monto)}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                        <div className="tx-info">
+                          <p className="tx-name">{contactName}</p>
+                          <p className="tx-date">{formatDate(tx.created_at)}</p>
+                        </div>
+                      </div>
+                      
+                      <div className="tx-right">
+                        <span className={`tx-amount ${amountClass}`}>
+                          {sign} {formatCurrency(tx.amount)}
+                        </span>
+                        {tx.counterparty_details?.phone && (
+                          <span className="tx-phone">{tx.counterparty_details.phone}</span>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             ) : (
-              <p className="no-transactions-message">Aún no tienes transacciones registradas en Luca.</p>
+              <div className="empty-state">
+                <CreditCard size={48} className="text-gray" />
+                <p>No hay movimientos recientes.</p>
+              </div>
             )}
 
-          </div>
-
+            {/* BOTÓN VER MÁS */}
+            {visibleCount < allTransactions.length && (
+              <button className="btn-load-more" onClick={handleLoadMore}>
+                Ver más transacciones
+              </button>
+            )}
+          </section>
         </div>
-      </div>
+
+      </main>
     </div>
   );
 }

@@ -1,201 +1,304 @@
-/* billetera.css */
-
+/* --- VARIABLES Y RESET --- */
 :root {
-  --sidebar-width: 250px;
-  --bg-body: #f7f9fc;
+  --primary-color: #4f46e5; /* Indigo */
+  --primary-gradient: linear-gradient(135deg, #6366f1 0%, #4338ca 100%);
+  --bg-color: #f8fafc;
+  --text-dark: #1e293b;
+  --text-gray: #64748b;
+  --success: #10b981;
+  --danger: #ef4444;
+  --card-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.3);
 }
 
-/* 1. LAYOUT PRINCIPAL */
-.app-layout {
+.billetera-layout {
+  background-color: var(--bg-color);
   min-height: 100vh;
-  background-color: var(--bg-body);
-  font-family: 'Segoe UI', Roboto, sans-serif;
-  /* Quitamos display: flex porque el sidebar es fixed */
-  display: block; 
+  display: flex;
+  flex-direction: column;
 }
 
-/* 2. ÁREA DE CONTENIDO (El arreglo) */
-.main-content-area {
-  /* DEJA EL HUECO PARA EL SIDEBAR */
-  margin-left: var(--sidebar-width);
-  width: calc(100% - var(--sidebar-width));
-  
-  /* EMPUJA EL CONTENIDO HACIA ABAJO */
-  padding-top: 5rem; /* Antes tenías 30px, muy poco */
-  padding-left: 2rem;
-  padding-right: 2rem;
-  padding-bottom: 2rem;
-  
-  box-sizing: border-box;
+/* --- LAYOUT RESPONSIVE --- */
+/* Desktop: Sidebar a la izquierda, contenido desplazado */
+@media (min-width: 769px) {
+  .billetera-content {
+    margin-left: 250px; /* Espacio para el Sidebar */
+    padding: 2rem;
+  }
+  .content-wrapper {
+    max-width: 800px;
+    margin: 0 auto;
+  }
 }
 
-.billetera-container {
-  width: 100%;
-  max-width: 1000px; /* Un poco más contenido para que no se estire tanto */
-  margin: 0 auto;
+/* Mobile: Sin margen izquierdo, padding abajo para nav bar */
+@media (max-width: 768px) {
+  .billetera-content {
+    margin-left: 0;
+    padding: 1.5rem 1rem 90px 1rem; /* 90px padding-bottom */
+  }
 }
 
-/* ------------------------------------ */
-/* 3. BLOQUE: TARJETAS DE RESUMEN (GRID) */
-/* ------------------------------------ */
-.summary-grid {
-  display: grid;
-  /* Ajuste para que se vea mejor en pantallas anchas */
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
+/* --- TARJETA DE DÉBITO VIRTUAL (CSS PURO) --- */
+.card-section {
   margin-bottom: 2rem;
 }
 
-.summary-card {
-  padding: 1.5rem;
-  border-radius: 16px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+.virtual-card {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  height: 220px;
+  border-radius: 20px;
+  background: var(--primary-gradient);
+  box-shadow: var(--card-shadow);
+  color: white;
+  padding: 25px;
   display: flex;
   flex-direction: column;
-  border: 1px solid #e2e8f0;
-  background-color: white;
+  justify-content: space-between;
+  overflow: hidden;
+  margin: 0 auto; /* Centrado en móvil */
+  transition: transform 0.3s ease;
 }
 
-/* Estilos específicos de tarjeta */
-.savings-card {
-  background: linear-gradient(135deg, #eff6ff 0%, #ffffff 100%);
-  border-left: 5px solid #2563eb;
+.virtual-card:hover {
+  transform: translateY(-5px);
 }
 
-.card-title {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #64748b;
-  margin-bottom: 0.5rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+/* Decoración de fondo sutil */
+.card-bg {
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+  transform: scale(2);
+  pointer-events: none;
 }
 
-.card-value {
-  font-size: 2.5rem;
-  font-weight: 800;
-  color: #1e293b;
-  margin: 0;
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.card-subtitle {
+/* Chip Simulado */
+.card-chip {
+  width: 50px;
+  height: 35px;
+  background: linear-gradient(135deg, #fcd34d 0%, #d97706 100%);
+  border-radius: 6px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(0,0,0,0.1);
+}
+
+.chip-line {
+  position: absolute;
+  border: 1px solid rgba(0,0,0,0.15);
+  width: 100%;
+  height: 50%;
+  top: 25%;
+}
+.chip-line:nth-child(2) { transform: rotate(90deg); top: 0; height: 100%; border: none; border-left: 1px solid rgba(0,0,0,0.15); left: 33%; }
+.chip-line:nth-child(3) { transform: rotate(90deg); top: 0; height: 100%; border: none; border-left: 1px solid rgba(0,0,0,0.15); left: 66%; }
+
+.contactless-icon {
+  transform: rotate(90deg);
+  opacity: 0.8;
+}
+
+.card-body {
+  margin-top: 10px;
+}
+
+.card-label {
   font-size: 0.85rem;
-  color: #94a3b8;
-  margin-top: 0.5rem;
+  opacity: 0.8;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
-/* ------------------------------------ */
-/* 4. HISTORIAL DE TRANSACCIONES */
-/* ------------------------------------ */
-.transactions-history-card {
-  background-color: #ffffff;
-  padding: 2rem;
+.card-balance {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 5px 0;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.holder-name {
+  display: block;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+}
+
+/* Logo tipo Mastercard/Visa simulado */
+.card-logo {
+  display: flex;
+}
+.card-logo .circle {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  opacity: 0.8;
+}
+.c1 { background-color: #ef4444; margin-right: -10px; }
+.c2 { background-color: #f59e0b; }
+
+/* --- LISTA DE MOVIMIENTOS --- */
+.transactions-section {
+  background: white;
   border-radius: 16px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-  border: 1px solid #e2e8f0;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
 }
 
-.history-header {
-  margin-bottom: 1.5rem;
-  border-bottom: 1px solid #f1f5f9;
-  padding-bottom: 1rem;
-}
-
-.history-header h2 {
+.section-title {
   font-size: 1.25rem;
   font-weight: 700;
-  color: #1e293b;
-  margin: 0;
+  color: var(--text-dark);
+  margin-bottom: 1.5rem;
 }
 
-/* TABLA */
-.tabla-transacciones {
-  width: 100%;
-  border-collapse: collapse;
+.transaction-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid #f1f5f9;
+  transition: background 0.2s;
 }
 
-.tabla-transacciones th {
-  text-align: left;
-  padding: 1rem;
-  color: #64748b;
-  font-size: 0.85rem;
-  font-weight: 600;
-  border-bottom: 1px solid #e2e8f0;
-}
-
-.tabla-transacciones td {
-  padding: 1rem;
-  vertical-align: middle;
-  border-bottom: 1px solid #f8fafc;
-  color: #334155;
-  font-size: 0.95rem;
-}
-
-.tabla-transacciones tr:last-child td {
+.transaction-item:last-child {
   border-bottom: none;
 }
 
-/* DETALLES TXN */
-.txn-description-cell {
+.tx-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.avatar-circle {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  flex-shrink: 0;
+}
+
+.bg-red { background-color: #fee2e2; color: var(--danger); }
+.bg-green { background-color: #d1fae5; color: var(--success); }
+
+.tx-info {
   display: flex;
   flex-direction: column;
 }
 
-.txn-description-text {
+.tx-name {
   font-weight: 600;
-  color: #1e293b;
+  color: var(--text-dark);
 }
 
-/* MONTOS */
-.text-right { text-align: right; }
+.tx-date {
+  font-size: 0.8rem;
+  color: var(--text-gray);
+}
 
-.positivo {
-  color: #16a34a; /* Verde moderno */
+.tx-right {
+  text-align: right;
+}
+
+.tx-amount {
+  display: block;
   font-weight: 700;
-  background-color: #dcfce7;
-  padding: 4px 8px;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  display: inline-block;
+  font-size: 1rem;
 }
 
-.negativo {
-  color: #1e293b;
+.amount-credit { color: var(--success); }
+.amount-debit { color: var(--danger); }
+
+.tx-phone {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--text-gray);
+  margin-top: 2px;
+}
+
+/* --- BOTÓN VER MÁS --- */
+.btn-load-more {
+  width: 100%;
+  padding: 12px;
+  margin-top: 1rem;
+  background: transparent;
+  border: 1px solid #e2e8f0;
+  color: var(--primary-color);
   font-weight: 600;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
 }
 
-.no-transactions-message {
+.btn-load-more:hover {
+  background: #eff6ff;
+  border-color: var(--primary-color);
+}
+
+/* --- UTILIDADES Y ANIMACIONES --- */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  color: var(--primary-color);
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+.empty-state {
   text-align: center;
-  padding: 3rem;
-  color: #94a3b8;
-  font-style: italic;
+  padding: 2rem;
+  color: var(--text-gray);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
 }
 
-/* ------------------------------------ */
-/* 5. MÓVIL (EL FIX IMPORTANTE) */
-/* ------------------------------------ */
-@media (max-width: 768px) {
-  .main-content-area {
-    /* En móvil quitamos el margen izquierdo porque el sidebar desaparece/cambia */
-    margin-left: 0;
-    width: 100%;
-    
-    /* Padding superior suficiente para que no choque */
-    padding-top: 2rem; 
-    padding-left: 1rem;
-    padding-right: 1rem;
-    padding-bottom: 6rem; /* Espacio abajo para la barra móvil */
-  }
+.error-screen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  color: var(--danger);
+  font-weight: bold;
+}
 
-  .summary-grid {
-    grid-template-columns: 1fr;
-  }
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-  /* Ocultar columnas secundarias en móvil para que quepa la tabla */
-  .tabla-transacciones th:nth-child(2), 
-  .tabla-transacciones td:nth-child(2),
-  .tabla-transacciones th:nth-child(3), 
-  .tabla-transacciones td:nth-child(3) {
-    display: none;
-  }
+.fade-in-up {
+  animation: fadeInUp 0.6s ease-out forwards;
+  opacity: 0;
+  transform: translateY(20px);
+}
+.delay-1 { animation-delay: 0.2s; }
+
+@keyframes fadeInUp {
+  to { opacity: 1; transform: translateY(0); }
 }
