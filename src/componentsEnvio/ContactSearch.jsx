@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { API_URLS, authFetch } from '../services/apiConfig';
+import { API_URLS, authFetch } from './apiConfig';
 
 const ContactSearch = ({ onContactSelect }) => {
     const [phone, setPhone] = useState('');

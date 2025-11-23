@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { API_URLS, authFetch } from '../services/apiConfig';
+import { API_URLS, authFetch } from './apiConfig';
 
 const AmountScreen = ({ contact, myWalletId, onBack, onSuccess }) => {
     const [amount, setAmount] = useState('');

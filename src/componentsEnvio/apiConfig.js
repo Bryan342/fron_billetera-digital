@@ -1,8 +1,20 @@
-// 👇 1. Centralizamos las URLs y el Token aquí para no repetir código
+// 👇 1. CAMBIA ESTA VARIABLE A TU ANTOJO
+const INTEROP_HOST = 'http://localhost:3000'; 
+
+// --- CONFIGURACIÓN DE RUTAS ---
 export const API_URLS = {
+    // Microservicio de Usuarios (Banca Luca)
     USERS: 'https://userservicesanti.onrender.com/users',
+    
+    // Microservicio de Billeteras (Banca Luca)
     WALLET: 'https://billetera-production.up.railway.app/api/v1/wallets',
-    TRANSACTION: 'https://transactionmicroservicios-production.up.railway.app/transactions'
+    
+    // Microservicio de Transacciones (Banca Luca)
+    TRANSACTION: 'https://transactionmicroservicios-production.up.railway.app/transactions',
+
+    // 👇 2. AQUÍ SE CONSTRUYEN LAS RUTAS AUTOMÁTICAMENTE
+    INTEROP_WALLETS: `${INTEROP_HOST}/api/v1/wallets`,
+    INTEROP_SEND:    `${INTEROP_HOST}/api/v1/sendTransfer`
 };
 
 // Función auxiliar para hacer peticiones con el Token automáticamente
@@ -24,4 +36,14 @@ export const authFetch = async (url, options = {}) => {
     }
 
     return response;
+};
+export const interopFetch = async (url, options = {}) => {
+    const token = localStorage.getItem('token');
+    const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+        'x-wallet-token': 'luca-token', 
+        ...options.headers
+    };
+    return fetch(url, { ...options, headers });
 };
