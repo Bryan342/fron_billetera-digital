@@ -191,3 +191,234 @@
     margin-bottom: 1rem;
   }
 }
+
+/* --- NUEVOS ESTILOS AGREGADOS --- */
+
+/* Tarjeta de Saldo Destacada */
+.balance-card-highlight {
+    background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+    color: white;
+    border: none;
+}
+
+.balance-display {
+    display: flex;
+    align-items: flex-start;
+    margin-top: 10px;
+}
+
+.balance-display .currency {
+    font-size: 1.5rem;
+    margin-top: 5px;
+    margin-right: 5px;
+    opacity: 0.9;
+}
+
+.balance-display .amount {
+    font-size: 3.5rem;
+    font-weight: 800;
+    line-height: 1;
+}
+
+/* Efecto de Carga (Skeleton) */
+.skeleton-loader {
+    background: #e2e8f0;
+    border-radius: 4px;
+    animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
+}
+
+/* Ajuste móvil para el saldo */
+@media (max-width: 768px) {
+    .balance-display .amount {
+        font-size: 2.8rem;
+    }
+}
+
+/* --- ACCESOS RÁPIDOS --- */
+.quick-actions-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 10px;
+    margin-bottom: 1rem;
+}
+
+.action-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    text-decoration: none;
+    color: var(--text-main);
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.icon-circle {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%; /* Círculos perfectos */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    background-color: white;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    transition: transform 0.2s;
+}
+
+.action-btn:hover .icon-circle { transform: translateY(-3px); }
+.icon-circle.send { background: #dbeafe; color: #2563eb; }
+.icon-circle.qr { background: #1e293b; color: white; }
+.icon-circle.reload { background: #ffedd5; color: #f97316; }
+.icon-circle.more { background: #f1f5f9; color: #64748b; }
+
+/* --- RESUMEN FINANCIERO (INGRESOS VS GASTOS) --- */
+.finance-summary-row {
+    display: flex;
+    gap: 1rem;
+}
+
+.summary-item {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 1rem;
+}
+
+.summary-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+.summary-icon.green { background: #dcfce7; color: #16a34a; }
+.summary-icon.red { background: #fee2e2; color: #dc2626; }
+
+.summary-label { font-size: 0.85rem; color: #64748b; display: block; }
+.summary-amount { margin: 0; font-size: 1.1rem; font-weight: 800; }
+.summary-amount.green { color: #16a34a; }
+.summary-amount.red { color: #dc2626; }
+
+/* --- LISTA MOVIMIENTOS --- */
+.mini-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.8rem;
+    color: white;
+}
+.bg-green { background-color: #10b981; }
+.bg-red { background-color: #ef4444; }
+
+.text-green { color: #10b981; font-weight: bold; }
+.text-red { color: #ef4444; font-weight: bold; }
+
+/* --- EXTRA --- */
+.promo-banner-simple {
+    background: #e0e7ff;
+    color: #3730a3;
+    padding: 12px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    text-align: center;
+}
+/* --- CARRUSEL DE PROMOCIONES --- */
+.carousel-section {
+    width: 100%;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+}
+
+.promo-carousel {
+    display: flex;
+    gap: 15px;
+    overflow-x: auto;
+    padding-bottom: 10px; /* Espacio para el scrollbar */
+    scrollbar-width: none; /* Ocultar scrollbar en Firefox */
+}
+
+/* Ocultar scrollbar en Chrome/Safari */
+.promo-carousel::-webkit-scrollbar {
+    display: none;
+}
+
+.promo-slide {
+    min-width: 280px; /* Ancho fijo de cada tarjeta */
+    height: 140px;
+    border-radius: 16px;
+    padding: 1.2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    flex-shrink: 0; /* Evita que se encojan */
+    transition: transform 0.2s;
+}
+
+.promo-slide:hover {
+    transform: scale(1.02);
+}
+
+.promo-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+    max-width: 60%;
+}
+
+.promo-text h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    line-height: 1.2;
+}
+
+.promo-badge-mini {
+    font-size: 0.75rem;
+    font-weight: 800;
+    border: 1px solid;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.slide-img {
+    width: 90px;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 50%; /* Imagen redonda */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.btn-claim {
+    border: none;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 5px;
+}
+
+/* Ajuste móvil para que el carrusel ocupe todo el ancho */
+@media (max-width: 768px) {
+    .promo-carousel {
+        padding-right: 20px; /* Margen derecho para poder ver el último item */
+    }
+}

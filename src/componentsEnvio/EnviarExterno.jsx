@@ -44,7 +44,6 @@ const EnviarExterno = () => {
             const json = await res.json();
 
             if (json.success && json.data && json.data.length > 0) {
-                // 👇👇👇 AQUÍ ESTÁ EL CAMBIO CLAVE: FILTRAMOS "LUCA" 👇👇👇
                 const walletsFiltradas = json.data.filter(wallet => wallet.appName !== 'LUCA');
                 
                 if (walletsFiltradas.length > 0) {
@@ -70,19 +69,27 @@ const EnviarExterno = () => {
         setStep(3); // Pasamos a poner monto
     };
 
-    // 4. ENVIAR DINERO
+    // 4. ENVIAR DINERO (CON GENERACIÓN DE ID ÚNICO)
     const handleTransfer = async (e) => {
         e.preventDefault();
         if (!amount || !myPhone || !selectedWallet) return;
         
         setLoading(true);
         try {
+            // 👇 GENERAMOS EL ID ÚNICO (Timestamp + Random)
+            // Ejemplo de resultado: "TX-171542389123-8842"
+            const uniqueTxId = `TX-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
+
             const payload = {
                 fromIdentifier: myPhone,
                 toIdentifier: targetPhone,
                 toAppName: selectedWallet.appName,
-                amount: parseFloat(amount)
+                amount: parseFloat(amount),
+                externalTransactionId: uniqueTxId // 👈 AQUÍ LO AGREGAMOS
             };
+
+            // Para depurar, puedes ver qué ID se generó en la consola
+            console.log("Enviando Payload:", payload);
 
             const res = await interopFetch(API_URLS.INTEROP_SEND, {
                 method: 'POST',
@@ -161,13 +168,12 @@ const EnviarExterno = () => {
         </div>
     );
 
-    // VISTA 3: MONTO (Aquí se arregló el avatar estirado)
+    // VISTA 3: MONTO
     if (step === 3) return (
         <div className="step-container fade-in">
             <button onClick={() => setStep(2)} className="btn-back">← Volver</button>
             
             <div className="recipient-summary" style={{marginTop: '20px'}}>
-                {/* El estilo inline asegura que el color de fondo se aplique */}
                 <div className="avatar-large" style={{background:'#4f46e5'}}>
                     {selectedWallet.userName.charAt(0).toUpperCase()}
                 </div>
@@ -222,11 +228,10 @@ const EnviarExterno = () => {
     );
 };
 
-// 👇👇👇 ESTILOS LOCALES PARA ARREGLAR EL AVATAR 👇👇👇
+// 👇 ESTILOS LOCALES
 const styles = `
     .badge-app { background: #e0e7ff; color: #4338ca; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; display: inline-block; }
     
-    /* Esto arregla la "línea morada". Fuerza al avatar a ser un círculo centrado */
     .recipient-summary .avatar-large {
         width: 80px;
         height: 80px;
@@ -235,13 +240,12 @@ const styles = `
         justify-content: center;
         align-items: center;
         font-size: 2rem;
-        margin: 0 auto 15px auto; /* Centrado horizontal y margen abajo */
+        margin: 0 auto 15px auto;
         color: white;
         font-weight: bold;
     }
 `;
 
-// Inyectamos los estilos al final del componente
 const EnviarExternoWithStyles = () => (
     <>
         <style>{styles}</style>
