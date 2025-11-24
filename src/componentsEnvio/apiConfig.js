@@ -1,42 +1,40 @@
-// 👇 1. CAMBIA ESTA VARIABLE A TU ANTOJO
+// 👇 1. URL DE LA API CENTRAL (Solo para BUSCAR billeteras)
 const INTEROP_HOST = 'https://centralized-wallet-api-production.up.railway.app'; 
+
+// 👇 2. URL DE TU MICROSERVICIO DE TRANSACCIONES (Para ENVIAR)
+const TRANSACTION_HOST = 'https://transactionmicroservicios-production.up.railway.app';
 
 // --- CONFIGURACIÓN DE RUTAS ---
 export const API_URLS = {
-    // Microservicio de Usuarios (Banca Luca)
+    // Microservicios de Banca Luca
     USERS: 'https://userservicesanti.onrender.com/users',
-    
-    // Microservicio de Billeteras (Banca Luca)
     WALLET: 'https://billetera-production.up.railway.app/api/v1/wallets',
-    
-    // Microservicio de Transacciones (Banca Luca)
-    TRANSACTION: 'https://transactionmicroservicios-production.up.railway.app/transactions',
+    TRANSACTION: `${TRANSACTION_HOST}/transactions`,
 
-    // 👇 2. AQUÍ SE CONSTRUYEN LAS RUTAS AUTOMÁTICAMENTE
+    // 👇 RUTAS DE INTEROPERABILIDAD
+    // 1. Buscar: Sigue yendo directo a la central (GET)
     INTEROP_WALLETS: `${INTEROP_HOST}/api/v1/wallets`,
-    INTEROP_SEND:    `${INTEROP_HOST}/api/v1/sendTransfer`
+    
+    // 2. Enviar: Ahora va a TU microservicio (POST)
+    // Apunta a la ruta que creamos: /api/interbank/send
+    INTERBANK_SEND: `${TRANSACTION_HOST}/api/interbank/send`
 };
 
-// Función auxiliar para hacer peticiones con el Token automáticamente
+// Fetch para tus servicios internos (Usa Bearer Token)
 export const authFetch = async (url, options = {}) => {
     const token = localStorage.getItem('token');
-    
     const headers = {
         'Content-Type': 'application/json',
         ...options.headers,
         'Authorization': `Bearer ${token}`
     };
-
+    // ... resto de tu lógica de fetch ...
     const response = await fetch(url, { ...options, headers });
-    
-    // Si el token expiró (401), podrías redirigir al login aquí
-    if (response.status === 401) {
-        console.error("Token expirado o inválido");
-        // window.location.href = '/login'; 
-    }
-
+    if (response.status === 401) console.error("Token expirado");
     return response;
 };
+
+// Fetch para la API Central (Usa x-wallet-token) - SOLO PARA BUSQUEDAS
 export const interopFetch = async (url, options = {}) => {
     const token = localStorage.getItem('token');
     const headers = {
