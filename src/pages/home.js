@@ -101,6 +101,7 @@ function Home() {
                 });
                 if (profileRes.ok) {
                     const profileJson = await profileRes.json();
+                    localStorage.setItem("profileData", profileJson);
                     if (profileJson.fullname) {
                         const nombreCompleto = profileJson.fullname.split(" ")[2] || profileJson.fullname.split(" ")[0]; 
                         const nombreBonito = nombreCompleto.charAt(0).toUpperCase() + nombreCompleto.slice(1).toLowerCase();
