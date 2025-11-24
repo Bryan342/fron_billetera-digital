@@ -14,7 +14,7 @@ function Billetera() {
   const [visibleCount, setVisibleCount] = useState(10); // Cantidad a mostrar
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [holderName, setholderName] = useState("USUARIO REGISTRADO") 
+  const [holderName, setholderName] = useState("") 
 
   // Referencia para saber si el componente sigue montado (evita errores de memoria)
   const isMounted = useRef(true);
@@ -29,6 +29,8 @@ function Billetera() {
 
       if (profileData?.fullname) {
         setholderName(profileData.fullname);
+      } else {
+        setholderName("USUARIO REGISTRADO");
       }
 
       if (!token || !userData) {
