@@ -14,6 +14,7 @@ function Billetera() {
   const [visibleCount, setVisibleCount] = useState(10); // Cantidad a mostrar
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [holderName, setholderName] = useState("USUARIO REGISTRADO") 
 
   // Referencia para saber si el componente sigue montado (evita errores de memoria)
   const isMounted = useRef(true);
@@ -24,6 +25,11 @@ function Billetera() {
     const fetchData = async (isBackgroundRefresh = false) => {
       const token = localStorage.getItem('token');
       const userData = JSON.parse(localStorage.getItem("userData"));
+      const profileData = JSON.parse(localStorage.getItem("profileData"));
+
+      if (profileData?.fullname) {
+        setholderName(profileData.fullname);
+      }
 
       if (!token || !userData) {
         window.location.href = '/';
@@ -162,7 +168,7 @@ function Billetera() {
               <div className="card-footer">
                 <div className="card-holder">
                   <span className="holder-label">Titular</span>
-                  <span className="holder-name">USUARIO REGISTRADO</span>
+                  <span className="holder-name">{holderName}</span>
                 </div>
                 <div className="card-logo">
                   <div className="circle c1"></div>

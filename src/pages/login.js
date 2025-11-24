@@ -62,6 +62,27 @@ function Login() {
 
       localStorage.setItem("userData", JSON.stringify(userData));
 
+      const profileResponse = await fetch(
+        `https://userservicesanti.onrender.com/profile/dni/${dni}`,  //CAMBIAR RUTA
+        {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const profileData = await profileResponse.json();
+
+      if (!profileResponse.ok) {
+        setError("No se pudo obtener el perfil del usuario");
+        return;
+      }
+
+      localStorage.setItem("profileData", JSON.stringify(profileData));
+
+
       navigate("/home");
 
     } catch (err) {
