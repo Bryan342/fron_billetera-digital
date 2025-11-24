@@ -63,7 +63,7 @@ function Login() {
       localStorage.setItem("userData", JSON.stringify(userData));
 
       const profileResponse = await fetch(
-        `https://userservicesanti.onrender.com/profile/dni/${dni}`,  //CAMBIAR RUTA
+        `https://userservicesanti.onrender.com/users/profile/dni/${dni}`,  //CAMBIAR RUTA
         {
           method: "GET",
           headers: {
